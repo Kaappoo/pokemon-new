@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #131217;
+  --bg-header: #3a1078;
+  --bg-footer: #180831;
+  --text-primary: #f7f7f7;
+  --text-secondary: #d9d0ff;
+  --accent-purple: #883bcf;
+  --accent-cyan: aqua;
+}
+
+body {
+  margin: 0;
+  font-family: "Raleway", sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+/* Energy Icons */
+.energy-icon {
+  width: 1.4rem;
+  height: 1.4rem;
+  aspect-ratio: 1;
+  background-size: 1.2rem;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.energy-icon.Grass {
+  background-image: url("https://archives.bulbagarden.net/media/upload/thumb/2/2e/Grass-attack.png/20px-Grass-attack.png");
+}
+
+.energy-icon.Colorless {
+  background-image: url("https://archives.bulbagarden.net/media/upload/thumb/1/1d/Colorless-attack.png/20px-Colorless-attack.png");
+}
+
+.energy-icon.Fire {
+  background-image: url("https://archives.bulbagarden.net/media/upload/thumb/a/ad/Fire-attack.png/20px-Fire-attack.png");
+}
+
+.energy-icon.Water {
+  background-image: url("https://archives.bulbagarden.net/media/upload/thumb/1/11/Water-attack.png/20px-Water-attack.png");
+}
+
+.energy-icon.Lightning {
+  background-image: url("https://archives.bulbagarden.net/media/upload/thumb/0/04/Lightning-attack.png/20px-Lightning-attack.png");
+}
+
+.energy-icon.Psychic {
+  background-image: url("https://archives.bulbagarden.net/media/upload/thumb/e/ef/Psychic-attack.png/20px-Psychic-attack.png");
+}
+
+.energy-icon.Fighting {
+  background-image: url("https://archives.bulbagarden.net/media/upload/thumb/4/48/Fighting-attack.png/20px-Fighting-attack.png");
+}
+
+.energy-icon.Darkness {
+  background-image: url("https://archives.bulbagarden.net/media/upload/thumb/a/ab/Darkness-attack.png/20px-Darkness-attack.png");
+}
+
+.energy-icon.Metal {
+  background-image: url("https://archives.bulbagarden.net/media/upload/thumb/6/64/Metal-attack.png/20px-Metal-attack.png");
+}
+
+.energy-icon.Fairy {
+  background-image: url("https://archives.bulbagarden.net/media/upload/thumb/4/40/Fairy-attack.png/20px-Fairy-attack.png");
+}
+
+.energy-icon.Dragon {
+  background-image: url("https://archives.bulbagarden.net/media/upload/thumb/7/7a/Dragon-attack.png/20px-Dragon-attack.png");
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-header);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-purple);
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Skeleton loading animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #1e1c24 25%, #2a2733 50%, #1e1c24 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
