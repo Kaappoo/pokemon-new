@@ -1,6 +1,14 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useRecentCards, useNewestSet, type CardListItem } from '@/hooks/usePokemonApi'
-import Carousel from '@/components/Carousel'
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from '@/components/ui/carousel'
+import { Button } from '@/components/ui/button'
+import Autoplay from 'embla-carousel-autoplay'
 import bannerImg from '@/assets/banner.png'
 
 export const Route = createFileRoute('/')({ component: HomePage })
@@ -52,21 +60,29 @@ function HomePage() {
           </div>
         ) : (
           <div className="w-full max-w-[60vw]">
-            <Carousel slidesPerView={3} autoplayDelay={2500} cardClassName="flex justify-center">
-              {heroCards.map((card) => (
-                <CardImage key={card.id} card={card} onClick={() => viewCard(card.id)} size="large" />
-              ))}
+            <Carousel
+              opts={{ loop: true, align: 'start' }}
+              plugins={[Autoplay({ delay: 2500, stopOnInteraction: true, stopOnMouseEnter: true })]}
+            >
+              <CarouselContent>
+                {heroCards.map((card) => (
+                  <CarouselItem key={card.id} className="basis-1/3 flex justify-center">
+                    <CardImage card={card} onClick={() => viewCard(card.id)} size="large" />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
             </Carousel>
           </div>
         )}
 
         <div className="flex w-full justify-center pb-8 border-b border-gray-900">
-          <Link
-            to="/cards"
-            className="bg-[#0c0c0c] text-[#f7f7f7] text-lg font-semibold px-6 py-3 uppercase rounded-md no-underline transition-transform duration-100 hover:scale-105"
-          >
-            See all cards
-          </Link>
+          <Button asChild className="bg-[#0c0c0c] text-[#f7f7f7] text-lg font-semibold px-6 py-3 uppercase rounded-md transition-transform duration-100 hover:scale-105 hover:bg-[#0c0c0c]/90">
+            <Link to="/cards">
+              See all cards
+            </Link>
+          </Button>
         </div>
       </div>
 
@@ -81,12 +97,12 @@ function HomePage() {
               Check out all the new awesome cards released in the latest set
               of Pokemon TCG, this ever expanding card game!
             </span>
-            <button
+            <Button
               onClick={goToNewReleases}
-              className="bg-[#0c0c0c] text-white text-base md:text-lg font-semibold px-6 py-3 uppercase rounded-md border-none cursor-pointer transition-transform duration-100 hover:scale-105"
+              className="bg-[#0c0c0c] text-white text-base md:text-lg font-semibold px-6 py-3 uppercase rounded-md transition-transform duration-100 hover:scale-105 hover:bg-[#0c0c0c]/90"
             >
               CHECK OUT
-            </button>
+            </Button>
           </div>
           <div className="flex-1 p-4">
             <img
@@ -98,12 +114,21 @@ function HomePage() {
         </section>
 
         {/* Recent Cards Slider */}
-        <div className="px-4">
+        <div className="px-4 md:px-12">
           {!loadingRecent && sliderCards1.length > 0 && (
-            <Carousel slidesPerView={5} autoplayDelay={2000} cardClassName="flex justify-center">
-              {sliderCards1.map((card) => (
-                <CardImage key={card.id} card={card} onClick={() => viewCard(card.id)} size="small" />
-              ))}
+            <Carousel
+              opts={{ loop: true, align: 'start' }}
+              plugins={[Autoplay({ delay: 2000, stopOnInteraction: true, stopOnMouseEnter: true })]}
+            >
+              <CarouselContent>
+                {sliderCards1.map((card) => (
+                  <CarouselItem key={card.id} className="basis-1/5 flex justify-center">
+                    <CardImage card={card} onClick={() => viewCard(card.id)} size="small" />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
             </Carousel>
           )}
         </div>
@@ -121,12 +146,11 @@ function HomePage() {
               Check out all the sets and expansions released so far, including
               all of its cards and their information!
             </span>
-            <Link
-              to="/sets"
-              className="bg-white text-[#131217] text-base md:text-lg font-semibold px-6 py-3 uppercase rounded-md no-underline transition-transform duration-100 hover:scale-105"
-            >
-              CHECK OUT
-            </Link>
+            <Button asChild className="bg-white text-[#131217] text-base md:text-lg font-semibold px-6 py-3 uppercase rounded-md transition-transform duration-100 hover:scale-105 hover:bg-white/90">
+              <Link to="/sets">
+                CHECK OUT
+              </Link>
+            </Button>
           </div>
           <div className="flex-1 p-4">
             <img
@@ -141,12 +165,21 @@ function HomePage() {
         <div className="px-4 md:px-12">
           <h2 className="text-xl md:text-2xl font-bold text-gray-900">Featured cards</h2>
         </div>
-        <div className="px-4">
+        <div className="px-4 md:px-12">
           {!loadingRecent && sliderCards2.length > 0 && (
-            <Carousel slidesPerView={5} autoplayDelay={2500} cardClassName="flex justify-center">
-              {sliderCards2.map((card) => (
-                <CardImage key={card.id} card={card} onClick={() => viewCard(card.id)} size="small" />
-              ))}
+            <Carousel
+              opts={{ loop: true, align: 'start' }}
+              plugins={[Autoplay({ delay: 2500, stopOnInteraction: true, stopOnMouseEnter: true })]}
+            >
+              <CarouselContent>
+                {sliderCards2.map((card) => (
+                  <CarouselItem key={card.id} className="basis-1/5 flex justify-center">
+                    <CardImage card={card} onClick={() => viewCard(card.id)} size="small" />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious />
+              <CarouselNext />
             </Carousel>
           )}
           {loadingRecent && (
