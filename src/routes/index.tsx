@@ -37,21 +37,25 @@ function HomePage() {
   const sliderCards2 = recentCards.slice(18)
 
   return (
-    <div className="flex flex-col bg-white">
-      {/* Banner */}
+    <div className="flex flex-col" style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
       <div
-        className="h-[30vh] flex justify-center items-start text-white text-3xl font-semibold pt-10 bg-gray-900 mb-10"
+        className="h-[35vh] flex flex-col justify-center items-center text-white gap-2 relative overflow-hidden mb-20"
         style={{
           backgroundImage: `url(${bannerImg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
       >
-        New Cards!
+        <div className="absolute inset-0 bg-black/40" />
+        <h1 className="relative z-10 text-4xl md:text-5xl font-extrabold tracking-tight bg-linear-to-r from-[#d9d0ff] via-white to-[#d9d0ff] bg-clip-text text-transparent m-0 drop-shadow-lg">
+          New Cards!
+        </h1>
+        <p className="relative z-10 text-sm md:text-base text-(--text-secondary) font-medium m-0 opacity-80">
+          Discover the latest Pokémon TCG releases
+        </p>
       </div>
 
-      {/* Featured Carousel */}
-      <div className="flex flex-col items-center gap-4 relative -mt-32 md:-mt-40 px-4 md:px-20 lg:px-40">
+      <div className="flex flex-col items-center gap-6 relative -mt-24 md:-mt-32 px-4 md:px-20 lg:px-40 pb-10">
         {loadingRecent ? (
           <div className="flex gap-4 w-full justify-center">
             {[1, 2, 3].map((i) => (
@@ -77,44 +81,44 @@ function HomePage() {
           </div>
         )}
 
-        <div className="flex w-full justify-center pb-8 border-b border-gray-900">
-          <Button asChild className="bg-[#0c0c0c] text-[#f7f7f7] text-lg font-semibold px-6 py-3 uppercase rounded-md transition-transform duration-100 hover:scale-105 hover:bg-[#0c0c0c]/90">
-            <Link to="/cards">
-              See all cards
-            </Link>
-          </Button>
-        </div>
+        <Button asChild className="bg-(--accent-purple) text-white text-base md:text-lg font-semibold px-8 py-3 uppercase rounded-full transition-all duration-200 hover:scale-105 hover:shadow-[0_0_24px_rgba(136,59,207,0.4)] hover:bg-(--accent-purple)/90">
+          <Link to="/cards">
+            See all cards
+          </Link>
+        </Button>
+
+        <div className="w-full max-w-md h-px bg-linear-to-r from-transparent via-white/15 to-transparent" />
       </div>
 
-      <div className="mt-8 flex flex-col gap-8">
-        {/* New Releases Section */}
+      <div className="flex flex-col gap-0">
+        {/* ── New Releases Section ─────────────────── */}
         <section className="flex flex-col md:flex-row w-full">
-          <div className="flex-1 flex flex-col items-center justify-evenly gap-4 px-4 md:px-16 py-8">
-            <h1 className="text-2xl md:text-3xl font-bold uppercase text-center text-gray-900 m-0">
+          <div className="flex-1 flex flex-col items-center justify-evenly gap-5 px-6 md:px-16 py-12">
+            <h2 className="text-2xl md:text-3xl font-extrabold uppercase text-center m-0 tracking-tight bg-linear-to-r from-[#d9d0ff] to-white bg-clip-text text-transparent">
               New Releases!
-            </h1>
-            <span className="text-base md:text-lg text-center text-gray-700 px-4 md:px-16">
+            </h2>
+            <span className="text-base md:text-lg text-center text-(--text-secondary) px-4 md:px-12 leading-relaxed">
               Check out all the new awesome cards released in the latest set
-              of Pokemon TCG, this ever expanding card game!
+              of Pokémon TCG, this ever expanding card game!
             </span>
             <Button
               onClick={goToNewReleases}
-              className="bg-[#0c0c0c] text-white text-base md:text-lg font-semibold px-6 py-3 uppercase rounded-md transition-transform duration-100 hover:scale-105 hover:bg-[#0c0c0c]/90"
+              className="bg-white text-[#131217] text-base md:text-lg font-semibold px-8 py-3 uppercase rounded-full transition-all duration-200 hover:scale-105 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:text-white cursor-pointer"
             >
               CHECK OUT
             </Button>
           </div>
-          <div className="flex-1 p-4">
+          <div className="flex-1 p-4 md:p-6">
             <img
               src="https://assetsio.gnwcdn.com/pokemon_tcg_ex_raidons_preview.png?width=1200&height=630&fit=crop&enable=upscale&auto=webp"
               alt="New Pokemon TCG cards"
-              className="w-full h-full object-cover rounded-md"
+              className="w-full h-full object-cover rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
             />
           </div>
         </section>
 
-        {/* Recent Cards Slider */}
-        <div className="px-4 md:px-12">
+        {/* ── Recent Cards Slider ──────────────────── */}
+        <div className="px-4 md:px-12 py-6">
           {!loadingRecent && sliderCards1.length > 0 && (
             <Carousel
               opts={{ loop: true, align: 'start' }}
@@ -133,39 +137,38 @@ function HomePage() {
           )}
         </div>
 
-        {/* Expansions Section */}
-        <section
-          className="flex flex-col-reverse md:flex-row-reverse w-full"
-          style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
-        >
-          <div className="flex-1 flex flex-col items-center justify-evenly gap-4 px-4 md:px-16 py-8">
-            <h1 className="text-2xl md:text-3xl font-bold uppercase text-center m-0">
+        {/* ── Expansions Section ───────────────────── */}
+        <section className="flex flex-col-reverse md:flex-row-reverse w-full bg-white/[0.03] border-y border-white/[0.06]">
+          <div className="flex-1 flex flex-col items-center justify-evenly gap-5 px-6 md:px-16 py-12">
+            <h2 className="text-2xl md:text-3xl font-extrabold uppercase text-center m-0 tracking-tight bg-linear-to-r from-[#d9d0ff] to-white bg-clip-text text-transparent">
               Expansions!
-            </h1>
-            <span className="text-base md:text-lg text-center px-4 md:px-16">
+            </h2>
+            <span className="text-base md:text-lg text-center text-(--text-secondary) px-4 md:px-12 leading-relaxed">
               Check out all the sets and expansions released so far, including
               all of its cards and their information!
             </span>
-            <Button asChild className="bg-white text-[#131217] text-base md:text-lg font-semibold px-6 py-3 uppercase rounded-md transition-transform duration-100 hover:scale-105 hover:bg-white/90">
+            <Button asChild className="bg-(--accent-purple) text-white text-base md:text-lg font-semibold px-8 py-3 uppercase rounded-full transition-all duration-200 hover:scale-105 hover:shadow-[0_0_24px_rgba(136,59,207,0.4)] hover:bg-(--accent-purple)/90">
               <Link to="/sets">
                 CHECK OUT
               </Link>
             </Button>
           </div>
-          <div className="flex-1 p-4">
+          <div className="flex-1 p-4 md:p-6">
             <img
               src="https://www.pokemon.com/static-assets/content-assets/cms2/img/attend-events/_tiles/2021/tcg-rotation/tcg-2021-rotation-169-en.jpg"
               alt="Pokemon TCG Expansions"
-              className="w-full h-full object-cover rounded-md"
+              className="w-full h-full object-cover rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
             />
           </div>
         </section>
 
-        {/* Featured Cards */}
-        <div className="px-4 md:px-12">
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900">Featured cards</h2>
+        {/* ── Featured Cards ──────────────────────── */}
+        <div className="px-4 md:px-12 pt-10">
+          <h2 className="text-xl md:text-2xl font-extrabold tracking-tight bg-linear-to-r from-[#d9d0ff] to-white bg-clip-text text-transparent">
+            Featured cards
+          </h2>
         </div>
-        <div className="px-4 md:px-12">
+        <div className="px-4 md:px-12 pb-6">
           {!loadingRecent && sliderCards2.length > 0 && (
             <Carousel
               opts={{ loop: true, align: 'start' }}
@@ -191,12 +194,12 @@ function HomePage() {
           )}
         </div>
 
-        {/* Popular Pokemon */}
-        <section className="flex flex-col py-8" style={{ backgroundColor: 'var(--bg-primary)' }}>
-          <h2 className="text-xl md:text-2xl font-bold text-white px-4 md:px-12 mb-4">
-            Popular pokemon
+        {/* ── Popular Pokemon ─────────────────────── */}
+        <section className="flex flex-col py-10 px-4 md:px-12 bg-white/[0.03] border-t border-white/[0.06]">
+          <h2 className="text-xl md:text-2xl font-extrabold tracking-tight bg-linear-to-r from-[#d9d0ff] to-white bg-clip-text text-transparent mb-6">
+            Popular Pokémon
           </h2>
-          <div className="flex flex-wrap md:flex-nowrap h-[300px] md:h-[350px] px-4 gap-4">
+          <div className="flex flex-wrap md:flex-nowrap h-[300px] md:h-[350px] gap-4">
             <div className="flex flex-col flex-1 min-w-[120px] gap-4">
               <PokemonButton name="charizard" bgColor="#e65100" bgImage="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png" onClick={() => goToPokemon('charizard')} />
             </div>
@@ -224,8 +227,8 @@ function CardImage({ card, onClick, size }: { card: CardListItem; onClick: () =>
     ? 'h-[180px] sm:h-[250px] md:h-[320px]'
     : 'h-[80px] sm:h-[120px] md:h-[200px] lg:h-[250px]'
   return (
-    <div onClick={onClick} className="cursor-pointer transition-transform duration-100 hover:scale-95 flex justify-center">
-      <img src={imgUrl} alt={card.name} loading="lazy" className={`rounded-xl shadow-[5px_4px_5px_0px_rgba(0,0,0,0.54)] ${heightClass}`} />
+    <div onClick={onClick} className="cursor-pointer transition-all duration-200 hover:scale-95 hover:brightness-110 flex justify-center">
+      <img src={imgUrl} alt={card.name} loading="lazy" className={`rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.5)] ${heightClass}`} />
     </div>
   )
 }
@@ -234,10 +237,11 @@ function PokemonButton({ name, bgColor, bgImage, onClick }: { name: string; bgCo
   return (
     <div
       onClick={onClick}
-      className="flex-1 rounded-lg flex justify-end items-end p-4 cursor-pointer transition-transform duration-200 hover:scale-[1.04] bg-no-repeat bg-contain overflow-hidden relative"
+      className="flex-1 rounded-xl flex justify-end items-end p-4 cursor-pointer transition-all duration-200 hover:scale-[1.04] hover:shadow-[0_8px_30px_rgba(0,0,0,0.4)] bg-no-repeat bg-contain overflow-hidden relative"
       style={{ backgroundColor: bgColor, backgroundImage: `url(${bgImage})`, backgroundPosition: 'center top', backgroundSize: '80%', minHeight: '100px' }}
     >
-      <span className="text-white text-xl md:text-2xl lg:text-3xl font-semibold z-10 drop-shadow-lg">{name}</span>
+      <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent" />
+      <span className="text-white text-xl md:text-2xl lg:text-3xl font-bold z-10 drop-shadow-lg capitalize">{name}</span>
     </div>
   )
 }

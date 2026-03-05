@@ -1,35 +1,36 @@
 export default function Footer() {
     return (
-        <footer
-            style={{ backgroundColor: 'var(--bg-footer)' }}
-            className="flex flex-col items-center justify-center text-white gap-3 py-6 px-4"
-        >
-            <h4 className="m-0 text-center text-sm font-normal">
-                This website is not affiliated with Nintendo or Pokemon Company.
-            </h4>
-            <h4 className="m-0 text-center text-sm font-normal">
-                All data made available by the{' '}
-                <a
-                    href="https://pokemontcg.io/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ color: 'var(--accent-purple)' }}
-                    className="hover:underline"
-                >
-                    pokemontcg api
-                </a>
-                .
-            </h4>
-            <h4 className="m-0 text-center text-sm font-normal">
+        <footer className="flex flex-col items-center justify-center gap-4 py-8 px-4 bg-(--bg-footer) border-t border-white/[0.06]">
+            <div className="flex flex-col items-center gap-2">
+                <p className="m-0 text-center text-sm text-(--text-secondary) opacity-60">
+                    This website is not affiliated with Nintendo or Pokémon Company.
+                </p>
+                <p className="m-0 text-center text-sm text-(--text-secondary) opacity-60">
+                    All data made available by the{' '}
+                    <a
+                        href="https://pokemontcg.io/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-(--accent-purple) hover:underline font-medium transition-colors hover:brightness-125"
+                    >
+                        pokemontcg api
+                    </a>
+                    .
+                </p>
+            </div>
+
+            <div className="w-16 h-px bg-white/10" />
+
+            <p className="m-0 text-center text-sm text-(--text-secondary) font-medium">
                 Developed by Kauã Andrade Pacheco
-            </h4>
-            <div className="flex gap-4">
+            </p>
+
+            <div className="flex gap-6">
                 <a
                     href="https://github.com/Kaappoo/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{ color: 'var(--accent-purple)' }}
-                    className="hover:underline font-medium"
+                    className="text-(--accent-purple) hover:underline font-semibold text-sm transition-all hover:brightness-125 hover:scale-105"
                 >
                     Github
                 </a>
@@ -37,8 +38,7 @@ export default function Footer() {
                     href="https://www.linkedin.com/in/kau%C3%A3-andrade-pacheco-360675226/"
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{ color: 'var(--accent-purple)' }}
-                    className="hover:underline font-medium"
+                    className="text-(--accent-purple) hover:underline font-semibold text-sm transition-all hover:brightness-125 hover:scale-105"
                 >
                     Linkedin
                 </a>
