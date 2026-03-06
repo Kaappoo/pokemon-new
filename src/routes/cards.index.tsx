@@ -23,7 +23,7 @@ function CardsPage() {
     const initialFilters = useMemo(
         () => ({
             page: 1,
-            itemsPerPage: 40,
+            itemsPerPage: 42,
             name: searchName || undefined,
             set: searchSet || undefined,
         }),
@@ -86,7 +86,6 @@ function CardsPage() {
 
     return (
         <div className="flex flex-col min-h-screen" style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
-            {/* ── Hero search area ────────────────────────── */}
             <div className="flex flex-col items-center gap-6 pt-10 pb-6 px-4">
                 <div className="flex flex-col items-center gap-2">
                     <h1 className="text-3xl md:text-4xl font-extrabold m-0 tracking-tight bg-[#d9d0ff] bg-clip-text text-transparent">
@@ -120,7 +119,6 @@ function CardsPage() {
 
             <div className="flex flex-col lg:flex-row lg:gap-10 flex-1">
                 <aside className="lg:w-64 shrink-0 px-4 pb-4 lg:pb-0 lg:pt-2">
-                    {/* Toggle button (mobile + desktop) */}
                     <button
                         onClick={() => setFiltersOpen(!filtersOpen)}
                         className="flex items-center gap-2 text-sm font-medium mb-3 bg-transparent border-none cursor-pointer transition-colors hover:opacity-80"
@@ -218,7 +216,6 @@ function CardsPage() {
                 </div>
             </div>
 
-            {/* ── Pagination ─────────────────────────────── */}
             {!isLoading && cards.length > 0 && (
                 <div className="flex items-center justify-center gap-3 py-8 px-4">
                     <button

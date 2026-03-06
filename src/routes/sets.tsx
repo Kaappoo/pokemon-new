@@ -17,7 +17,6 @@ function SetsPage() {
 
     return (
         <div className="flex flex-col gap-6 min-h-screen p-6 md:p-10 bg-(--bg-primary) text-(--text-primary)">
-            {/* Header */}
             <div className="flex flex-col items-center gap-2 pt-4 pb-2">
                 <h1 className="text-3xl md:text-4xl font-extrabold m-0 tracking-tight bg-[#d9d0ff] bg-clip-text text-transparent">
                     All Sets
@@ -27,7 +26,6 @@ function SetsPage() {
                 </p>
             </div>
 
-            {/* Grid */}
             {isLoading ? (
                 <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))' }}>
                     {Array.from({ length: 8 }).map((_, i) => (
@@ -67,7 +65,6 @@ function SetsPage() {
                 </div>
             )}
 
-            {/* Pagination */}
             <div className="flex flex-wrap items-center justify-center gap-3 py-6">
                 <button
                     onClick={() => setPage((p) => Math.max(1, p - 1))}

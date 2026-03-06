@@ -8,6 +8,7 @@ export const Route = createFileRoute('/cards/$cardId')({
 function ViewCardPage() {
     const { cardId } = Route.useParams()
     const { card, isLoading } = useCard(cardId)
+    console.log(card)
 
     if (isLoading) {
         return (
@@ -33,7 +34,6 @@ function ViewCardPage() {
     return (
         <div className="flex flex-col p-6 md:p-10 min-h-screen bg-(--bg-primary) text-(--text-primary)">
             <div className="flex flex-col md:flex-row gap-8 max-w-6xl mx-auto w-full">
-                {/* Image + Description */}
                 <div className="flex flex-col gap-4 shrink-0">
                     <div className="relative group">
                         <img
@@ -49,9 +49,7 @@ function ViewCardPage() {
                     )}
                 </div>
 
-                {/* Info */}
                 <div className="flex flex-col gap-6 flex-1">
-                    {/* Basic info */}
                     <div className="flex flex-col md:flex-row gap-4 md:gap-12 pb-6 border-b border-white/10">
                         <div className="flex gap-8 md:gap-12">
                             <InfoBlock label="name">
@@ -85,7 +83,6 @@ function ViewCardPage() {
                         </div>
                     </div>
 
-                    {/* Category & meta */}
                     <div className="flex flex-wrap gap-6 pb-6 border-b border-white/10">
                         <InfoBlock label="category"><span className="font-medium">{card.category}</span></InfoBlock>
                         {card.rarity && <InfoBlock label="rarity"><span className="font-medium">{card.rarity}</span></InfoBlock>}
@@ -93,7 +90,6 @@ function ViewCardPage() {
                         {card.regulationMark && <InfoBlock label="regulation mark"><span className="font-medium">{card.regulationMark}</span></InfoBlock>}
                     </div>
 
-                    {/* Abilities & Attacks */}
                     {((card.abilities && card.abilities.length > 0) || (card.attacks && card.attacks.length > 0)) && (
                         <div className="flex flex-col gap-4">
                             <h2 className="m-0 text-lg md:text-xl font-extrabold uppercase tracking-wide bg-linear-to-r from-[#d9d0ff] to-white bg-clip-text text-transparent">
@@ -120,7 +116,6 @@ function ViewCardPage() {
                         </div>
                     )}
 
-                    {/* Weaknesses / Resistances / Retreat */}
                     <div className="flex flex-wrap gap-8 pb-6 border-b border-white/10">
                         <InfoBlock label="weaknesses">
                             <div className="flex items-center gap-2">
@@ -145,7 +140,6 @@ function ViewCardPage() {
                         </InfoBlock>
                     </div>
 
-                    {/* Variants */}
                     {card.variants && (
                         <div className="flex flex-wrap gap-3 pb-6 border-b border-white/10">
                             <InfoBlock label="variants">
@@ -160,7 +154,6 @@ function ViewCardPage() {
                         </div>
                     )}
 
-                    {/* Legality */}
                     {card.legal && (
                         <div className="flex gap-4">
                             <InfoBlock label="legality">

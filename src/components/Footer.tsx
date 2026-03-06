@@ -8,12 +8,12 @@ export default function Footer() {
                 <p className="m-0 text-center text-sm text-(--text-secondary) opacity-60">
                     All data made available by the{' '}
                     <a
-                        href="https://pokemontcg.io/"
+                        href="https://tcgdex.dev/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-(--accent-purple) hover:underline font-medium transition-colors hover:brightness-125"
                     >
-                        pokemontcg api
+                        tcgdex api
                     </a>
                     .
                 </p>

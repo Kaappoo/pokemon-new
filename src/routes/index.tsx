@@ -91,7 +91,6 @@ function HomePage() {
       </div>
 
       <div className="flex flex-col gap-0">
-        {/* ── New Releases Section ─────────────────── */}
         <section className="flex flex-col md:flex-row w-full">
           <div className="flex-1 flex flex-col items-center justify-evenly gap-5 px-6 md:px-16 py-12">
             <h2 className="text-2xl md:text-3xl font-extrabold uppercase text-center m-0 tracking-tight bg-linear-to-r from-[#d9d0ff] to-white bg-clip-text text-transparent">
@@ -117,7 +116,6 @@ function HomePage() {
           </div>
         </section>
 
-        {/* ── Recent Cards Slider ──────────────────── */}
         <div className="px-4 md:px-12 py-6">
           {!loadingRecent && sliderCards1.length > 0 && (
             <Carousel
@@ -137,7 +135,6 @@ function HomePage() {
           )}
         </div>
 
-        {/* ── Expansions Section ───────────────────── */}
         <section className="flex flex-col-reverse md:flex-row-reverse w-full bg-white/[0.03] border-y border-white/[0.06]">
           <div className="flex-1 flex flex-col items-center justify-evenly gap-5 px-6 md:px-16 py-12">
             <h2 className="text-2xl md:text-3xl font-extrabold uppercase text-center m-0 tracking-tight bg-linear-to-r from-[#d9d0ff] to-white bg-clip-text text-transparent">
@@ -162,7 +159,6 @@ function HomePage() {
           </div>
         </section>
 
-        {/* ── Featured Cards ──────────────────────── */}
         <div className="px-4 md:px-12 pt-10">
           <h2 className="text-xl md:text-2xl font-extrabold tracking-tight bg-linear-to-r from-[#d9d0ff] to-white bg-clip-text text-transparent">
             Featured cards
@@ -194,7 +190,6 @@ function HomePage() {
           )}
         </div>
 
-        {/* ── Popular Pokemon ─────────────────────── */}
         <section className="flex flex-col py-10 px-4 md:px-12 bg-white/[0.03] border-t border-white/[0.06]">
           <h2 className="text-xl md:text-2xl font-extrabold tracking-tight bg-linear-to-r from-[#d9d0ff] to-white bg-clip-text text-transparent mb-6">
             Popular Pokémon
