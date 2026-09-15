@@ -1,5 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useCard } from '@/hooks/usePokemonApi'
+import { useWishlist } from '@/hooks/useWishlist'
+import { useState } from 'react'
+import { Heart, Plus, Check } from 'lucide-react'
+import { collectionApi } from '@/lib/api'
 
 export const Route = createFileRoute('/cards/$cardId')({
     component: ViewCardPage,
@@ -7,8 +11,12 @@ export const Route = createFileRoute('/cards/$cardId')({
 
 function ViewCardPage() {
     const { cardId } = Route.useParams()
+    const navigate = useNavigate()
     const { card, isLoading } = useCard(cardId)
-    console.log(card)
+    const { isInWishlist, toggleWishlist, isLoggedIn } = useWishlist()
+
+    const [isAddingCollection, setIsAddingCollection] = useState(false)
+    const [collectionAdded, setCollectionAdded] = useState(false)
 
     if (isLoading) {
         return (
@@ -31,10 +39,55 @@ function ViewCardPage() {
         )
     }
 
+    const wishlisted = isInWishlist(card.id)
+
+    const handleWishlistToggle = async () => {
+        if (!isLoggedIn) {
+            navigate({ to: '/login' })
+            return
+        }
+        try {
+            await toggleWishlist({
+                card_id: card.id,
+                card_name: card.name,
+                card_image: card.image,
+                set_id: card.set?.id || '',
+                set_name: card.set?.name || '',
+            })
+        } catch (err: any) {
+            alert(err.message || 'Failed to update wishlist')
+        }
+    }
+
+    const handleAddToCollection = async () => {
+        if (!isLoggedIn) {
+            navigate({ to: '/login' })
+            return
+        }
+        setIsAddingCollection(true)
+        try {
+            await collectionApi.addToCollection({
+                card_id: card.id,
+                card_name: card.name,
+                card_image: card.image,
+                set_id: card.set?.id || '',
+                set_name: card.set?.name || '',
+                rarity: card.rarity || '',
+                quantity: 1,
+            })
+            setCollectionAdded(true)
+            setTimeout(() => setCollectionAdded(false), 2500)
+        } catch (err: any) {
+            alert(err.message || 'Failed to add card to collection')
+        } finally {
+            setIsAddingCollection(false)
+        }
+    }
+
     return (
         <div className="flex flex-col p-6 md:p-10 min-h-screen bg-(--bg-primary) text-(--text-primary)">
             <div className="flex flex-col md:flex-row gap-8 max-w-6xl mx-auto w-full">
-                <div className="flex flex-col gap-4 shrink-0">
+                <div className="flex flex-col gap-4 shrink-0 items-center md:items-start">
                     <div className="relative group">
                         <img
                             src={`${card.image}/high.webp`}
@@ -42,6 +95,42 @@ function ViewCardPage() {
                             className="w-[200px] md:w-[20vw] max-w-[350px] rounded-xl self-center md:self-start shadow-[0_8px_40px_rgba(136,59,207,0.25),0_4px_12px_rgba(0,0,0,0.4)] transition-transform duration-300 group-hover:scale-[1.02]"
                         />
                     </div>
+
+                    {/* Action buttons under card image */}
+                    <div className="flex flex-col w-full max-w-[350px] gap-2.5">
+                        <button
+                            onClick={handleWishlistToggle}
+                            className={`w-full py-3 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer border ${
+                                wishlisted
+                                    ? 'bg-red-500/20 text-red-400 border-red-500/40 shadow-lg shadow-red-500/10'
+                                    : 'bg-white/5 hover:bg-white/10 text-white border-white/10 hover:border-red-400/50'
+                            }`}
+                        >
+                            <Heart size={16} className={wishlisted ? 'fill-current text-red-400' : ''} />
+                            {wishlisted ? 'Wishlisted' : 'Add to Wishlist'}
+                        </button>
+
+                        <button
+                            onClick={handleAddToCollection}
+                            disabled={isAddingCollection}
+                            className={`w-full py-3 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer border ${
+                                collectionAdded
+                                    ? 'bg-green-500/20 text-green-400 border-green-500/40'
+                                    : 'bg-[#883bcf]/20 hover:bg-[#883bcf]/30 text-white border-[#883bcf]/40'
+                            }`}
+                        >
+                            {collectionAdded ? (
+                                <>
+                                    <Check size={16} /> Added to Collection
+                                </>
+                            ) : (
+                                <>
+                                    <Plus size={16} /> Add 1 to Collection
+                                </>
+                            )}
+                        </button>
+                    </div>
+
                     {card.description && (
                         <div className="p-4 text-sm italic text-(--text-secondary) border-b border-white/10 max-w-[350px] leading-relaxed">
                             {card.description}

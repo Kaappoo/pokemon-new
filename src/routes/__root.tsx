@@ -7,6 +7,7 @@ import {
 
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import { AuthProvider } from '../lib/auth-context'
 
 import appCss from '../styles.css?url'
 
@@ -54,13 +55,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   return (
-    <>
+    <AuthProvider>
       <Header />
       <main className="min-h-screen">
         <Outlet />
       </main>
       <Footer />
       <Scripts />
-    </>
+    </AuthProvider>
   )
 }
