@@ -93,3 +93,26 @@ plan. To enable it:
 That's it - no other setup needed. The workflow builds the backend and runs
 `./catalog-sync sync` against your Neon database, the same command you'd run
 locally.
+
+### Important: use Neon's *direct* connection string for the sync job
+
+The sync job writes concurrently (several goroutines upserting sets/cards at
+once). Neon's default connection string in the dashboard is the **pooled**
+one (hostname ends in `-pooler`), which routes through PgBouncer in
+transaction-pooling mode - that doesn't support the prepared-statement
+protocol Go's Postgres driver uses, and under concurrent writes it fails with
+errors like `bind message supplies N parameters, but prepared statement ""
+requires M`. The sync job now detects a high failure rate and exits non-zero
+instead of silently leaving the catalog half-populated, but the real fix is
+to avoid the pooled endpoint for this job:
+
+1. In the Neon dashboard's connection string widget, turn the **"Connection
+   pooling"** toggle **off** (or just remove `-pooler` from the hostname in
+   the string you already have).
+2. Use that direct connection string as the `DATABASE_URL` secret for the
+   GitHub Actions workflow specifically.
+
+The web backend's own `DATABASE_URL` (`.env` / Render env var) can stay on
+the pooled connection string if you like - it does one query at a time per
+request, so it doesn't hit this issue. It's only the sync job's concurrent
+writes that need the direct endpoint.

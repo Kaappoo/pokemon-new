@@ -30,6 +30,7 @@ func SyncCatalog(db *sql.DB) error {
 		setErrs     []string
 		syncedSets  int
 		syncedCards int
+		totalOps    int // every series/set/card upsert attempted, success or fail
 	)
 
 	sem := make(chan struct{}, syncConcurrency)
@@ -51,12 +52,20 @@ func SyncCatalog(db *sql.DB) error {
 			}
 
 			isPocket := set.Serie.ID == tcgdexPocketSerieID
+
+			mu.Lock()
+			totalOps++
+			mu.Unlock()
 			if err := upsertSeries(db, set.Serie.ID, set.Serie.Name); err != nil {
 				mu.Lock()
 				setErrs = append(setErrs, fmt.Sprintf("series for %s: %v", setID, err))
 				mu.Unlock()
 				return
 			}
+
+			mu.Lock()
+			totalOps++
+			mu.Unlock()
 			if err := upsertSet(db, set, raw, isPocket); err != nil {
 				mu.Lock()
 				setErrs = append(setErrs, fmt.Sprintf("upsert set %s: %v", setID, err))
@@ -66,6 +75,9 @@ func SyncCatalog(db *sql.DB) error {
 
 			cardCount := 0
 			for _, c := range set.Cards {
+				mu.Lock()
+				totalOps++
+				mu.Unlock()
 				if err := upsertCardResume(db, c, setID, isPocket); err != nil {
 					mu.Lock()
 					setErrs = append(setErrs, fmt.Sprintf("upsert card %s: %v", c.ID, err))
@@ -83,12 +95,32 @@ func SyncCatalog(db *sql.DB) error {
 	}
 	wg.Wait()
 
-	log.Printf("✅ Synced %d sets / %d cards (%d errors)\n", syncedSets, syncedCards, len(setErrs))
+	log.Printf("✅ Synced %d sets / %d cards (%d/%d operations failed)\n", syncedSets, syncedCards, len(setErrs), totalOps)
 	for _, e := range setErrs {
 		log.Println("   ⚠️", e)
 	}
 
+	// A handful of failures (a card TCGdex briefly 404s on, a transient
+	// network blip) is normal and safe to ignore - the next run retries it.
+	// A high failure rate means something systemic is wrong (most commonly:
+	// DATABASE_URL points at Neon's pooled/PgBouncer endpoint, which doesn't
+	// support the concurrent prepared-statement writes this job does) and
+	// should fail the job loudly instead of silently leaving the catalog
+	// half-populated.
+	if rate := errorRate(len(setErrs), totalOps); rate > maxAcceptableErrorRate {
+		return fmt.Errorf("catalog sync aborted: %d/%d set/card writes failed (%.0f%%) - this usually means DATABASE_URL is a pooled/PgBouncer connection string, which doesn't support this job's concurrent writes; use Neon's direct (non-pooled) connection string instead", len(setErrs), totalOps, rate*100)
+	}
+
 	return enrichPendingCards(db)
+}
+
+const maxAcceptableErrorRate = 0.05
+
+func errorRate(failed, total int) float64 {
+	if total == 0 {
+		return 0
+	}
+	return float64(failed) / float64(total)
 }
 
 func upsertSeries(db *sql.DB, id, name string) error {
@@ -222,6 +254,10 @@ func enrichPendingCards(db *sql.DB) error {
 			max = 20
 		}
 		log.Println("   ⚠️ " + strings.Join(failed[:max], "\n   ⚠️ "))
+	}
+
+	if rate := errorRate(len(failed), len(ids)); rate > maxAcceptableErrorRate {
+		return fmt.Errorf("card enrichment aborted: %d/%d cards failed (%.0f%%) - this usually means DATABASE_URL is a pooled/PgBouncer connection string, which doesn't support this job's concurrent writes; use Neon's direct (non-pooled) connection string instead", len(failed), len(ids), rate*100)
 	}
 	return nil
 }
