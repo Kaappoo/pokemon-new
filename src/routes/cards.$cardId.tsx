@@ -4,6 +4,7 @@ import { useWishlist } from '@/hooks/useWishlist'
 import { useState } from 'react'
 import { Heart, Plus, Check } from 'lucide-react'
 import { collectionApi } from '@/lib/api'
+import { ImageWithSkeleton } from '@/components/ImageWithSkeleton'
 
 export const Route = createFileRoute('/cards/$cardId')({
     component: ViewCardPage,
@@ -89,10 +90,12 @@ function ViewCardPage() {
             <div className="flex flex-col md:flex-row gap-8 max-w-6xl mx-auto w-full">
                 <div className="flex flex-col gap-4 shrink-0 items-center md:items-start">
                     <div className="relative group">
-                        <img
+                        <ImageWithSkeleton
                             src={`${card.image}/high.webp`}
                             alt={card.name}
-                            className="w-[200px] md:w-[20vw] max-w-[350px] rounded-xl self-center md:self-start shadow-[0_8px_40px_rgba(136,59,207,0.25),0_4px_12px_rgba(0,0,0,0.4)] transition-transform duration-300 group-hover:scale-[1.02]"
+                            aspectRatio="5/7"
+                            containerClassName="w-[200px] md:w-[20vw] max-w-[350px] rounded-xl self-center md:self-start shadow-[0_8px_40px_rgba(136,59,207,0.25),0_4px_12px_rgba(0,0,0,0.4)]"
+                            className="w-full h-full rounded-xl transition-transform duration-300 group-hover:scale-[1.02]"
                         />
                     </div>
 

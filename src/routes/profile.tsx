@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '../lib/auth-context'
 import { authApi, collectionApi, wishlistApi, UserProfileResponse } from '../lib/api'
 import { Heart, Layers, LogOut, Edit3, Save, X, Calendar, User as UserIcon, Sparkles, Trash2, PackageOpen } from 'lucide-react'
+import { ImageWithSkeleton } from '@/components/ImageWithSkeleton'
 
 export const Route = createFileRoute('/profile')({
   component: ProfilePage,
@@ -279,9 +280,12 @@ function ProfilePage() {
                       className="group relative rounded-xl overflow-hidden bg-white/5 border border-white/10 transition-all hover:-translate-y-1 hover:border-[#883bcf]/50"
                     >
                       <Link to="/cards/$cardId" params={{ cardId: item.card_id }}>
-                        <img
+                        <ImageWithSkeleton
                           src={`${item.card_image}/low.webp`}
                           alt={item.card_name}
+                          loading="lazy"
+                          aspectRatio="5/7"
+                          containerClassName="w-full rounded-t-xl"
                           className="w-full rounded-t-xl transition-transform duration-300 group-hover:scale-105"
                         />
                       </Link>
@@ -324,9 +328,12 @@ function ProfilePage() {
                       className="group relative rounded-xl overflow-hidden bg-white/5 border border-white/10 transition-all hover:-translate-y-1 hover:border-[#883bcf]/50"
                     >
                       <Link to="/cards/$cardId" params={{ cardId: item.card_id }}>
-                        <img
+                        <ImageWithSkeleton
                           src={`${item.card_image}/low.webp`}
                           alt={item.card_name}
+                          loading="lazy"
+                          aspectRatio="5/7"
+                          containerClassName="w-full rounded-t-xl"
                           className="w-full rounded-t-xl transition-transform duration-300 group-hover:scale-105"
                         />
                       </Link>

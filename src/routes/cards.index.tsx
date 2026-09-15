@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useCards, useAllSets, useTypes } from '@/hooks/usePokemonApi'
 import { useState, useMemo, useEffect } from 'react'
 import { Search, ChevronLeft, ChevronRight, SlidersHorizontal, X, PackageOpen } from 'lucide-react'
+import { ImageWithSkeleton } from '@/components/ImageWithSkeleton'
 
 interface CardsSearch {
     set?: string
@@ -192,10 +193,12 @@ function CardsPage() {
                                         className="group cursor-pointer relative rounded-xl overflow-hidden transition-all duration-250 ease-out hover:-translate-y-2 hover:scale-[1.04] hover:z-10 animate-[cardFadeIn_0.4s_ease_forwards] opacity-0"
                                         style={{ animationDelay: `${Math.min(i * 30, 400)}ms` }}
                                     >
-                                        <img
+                                        <ImageWithSkeleton
                                             src={`${card.image}/low.webp`}
                                             alt={card.name}
                                             loading="lazy"
+                                            aspectRatio="5/7"
+                                            containerClassName="w-full rounded-xl"
                                             className="w-full rounded-xl transition-shadow duration-300 group-hover:shadow-[0_12px_40px_rgba(136,59,207,0.35),0_4px_12px_rgba(0,0,0,0.5)]"
                                         />
                                         <div className="absolute bottom-0 left-0 right-0 py-2 px-1.5 bg-linear-to-t from-black/80 to-transparent rounded-b-xl opacity-0 transition-opacity duration-250 pointer-events-none group-hover:opacity-100">

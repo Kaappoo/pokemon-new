@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useAuth } from '../lib/auth-context'
 import { Heart, Trash2, PackageOpen, Sparkles } from 'lucide-react'
+import { ImageWithSkeleton } from '@/components/ImageWithSkeleton'
 
 export const Route = createFileRoute('/wishlist')({
   component: WishlistPage,
@@ -54,10 +55,12 @@ function WishlistPage() {
                 className="group relative rounded-xl overflow-hidden bg-white/5 border border-white/10 transition-all duration-300 hover:-translate-y-1.5 hover:border-[#883bcf]/60 hover:shadow-[0_12px_30px_rgba(136,59,207,0.2)] flex flex-col"
               >
                 <Link to="/cards/$cardId" params={{ cardId: item.card_id }} className="block overflow-hidden">
-                  <img
+                  <ImageWithSkeleton
                     src={`${item.card_image}/low.webp`}
                     alt={item.card_name}
                     loading="lazy"
+                    aspectRatio="5/7"
+                    containerClassName="w-full rounded-t-xl"
                     className="w-full rounded-t-xl transition-transform duration-300 group-hover:scale-105"
                   />
                 </Link>

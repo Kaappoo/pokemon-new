@@ -10,6 +10,7 @@ import {
 import { Button } from '@/components/ui/button'
 import Autoplay from 'embla-carousel-autoplay'
 import bannerImg from '@/assets/banner.png'
+import { ImageWithSkeleton } from '@/components/ImageWithSkeleton'
 
 export const Route = createFileRoute('/')({ component: HomePage })
 
@@ -223,7 +224,14 @@ function CardImage({ card, onClick, size }: { card: CardListItem; onClick: () =>
     : 'h-[80px] sm:h-[120px] md:h-[200px] lg:h-[250px]'
   return (
     <div onClick={onClick} className="cursor-pointer transition-all duration-200 hover:scale-95 hover:brightness-110 flex justify-center">
-      <img src={imgUrl} alt={card.name} loading="lazy" className={`rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.5)] ${heightClass}`} />
+      <ImageWithSkeleton
+        src={imgUrl}
+        alt={card.name}
+        loading="lazy"
+        aspectRatio="5/7"
+        containerClassName={`rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.5)] ${heightClass}`}
+        className={`w-full h-full object-cover rounded-xl ${heightClass}`}
+      />
     </div>
   )
 }
