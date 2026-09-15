@@ -76,5 +76,20 @@ go run . sync
 This is safe to re-run: it upserts every set, then only fetches full detail
 (rarity, category, hp, types) for cards it hasn't enriched yet, so a first
 run takes a few minutes but later runs are fast and only do work for
-new/changed sets. Run it once after setting up the database, then on a
-schedule (e.g. nightly) to pick up new sets/cards.
+new/changed sets. Run it once manually after setting up the database to do
+the initial import.
+
+### Scheduled sync via GitHub Actions
+
+`.github/workflows/sync-catalog.yml` runs the sync automatically every night
+at 03:00 UTC (and can be triggered manually from the Actions tab). It's free
+on GitHub Actions' minutes, unlike Render's Cron Jobs which require a paid
+plan. To enable it:
+
+1. In the GitHub repo, go to **Settings → Secrets and variables → Actions**.
+2. Add a new repository secret named `DATABASE_URL` with the same Neon
+   connection string used in `backend/.env`.
+
+That's it - no other setup needed. The workflow builds the backend and runs
+`./catalog-sync sync` against your Neon database, the same command you'd run
+locally.

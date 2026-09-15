@@ -1,0 +1,36 @@
+name: Sync Card Catalog
+
+# Keeps the series/sets/cards tables in Postgres up to date with TCGdex.
+# Free to run here (GitHub Actions minutes) instead of paying for a Render
+# Cron Job - see backend/README_NEON.md for details.
+
+on:
+  schedule:
+    # 03:00 UTC nightly. GitHub may delay scheduled runs by a few minutes
+    # under load; that's fine for this job.
+    - cron: '0 3 * * *'
+  workflow_dispatch: {} # lets you trigger a run manually from the Actions tab
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: backend/go.mod
+
+      - name: Build sync binary
+        run: go build -o catalog-sync .
+
+      - name: Run catalog sync
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: ./catalog-sync sync
