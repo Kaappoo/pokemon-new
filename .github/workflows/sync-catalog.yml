@@ -14,7 +14,10 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # The one-time initial backfill enriches every card individually from
+    # TCGdex (20k+ requests) and can take ~40 min; steady-state nightly runs
+    # only touch new/changed cards and finish in a couple of minutes.
+    timeout-minutes: 90
     defaults:
       run:
         working-directory: backend
