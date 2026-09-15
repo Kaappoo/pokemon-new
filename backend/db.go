@@ -20,6 +20,10 @@ func InitDB(connStr string) (*sql.DB, error) {
 		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 
+	// Neon's free tier pools a limited number of connections; keep well under
+	// that even when the catalog sync job fans out concurrent requests.
+	db.SetMaxOpenConns(10)
+
 	if err = createTables(); err != nil {
 		return nil, fmt.Errorf("failed to create tables: %w", err)
 	}
@@ -67,6 +71,47 @@ func createTables() error {
 		`CREATE INDEX IF NOT EXISTS idx_wishlists_card ON wishlists(card_id);`,
 		`CREATE INDEX IF NOT EXISTS idx_collections_user ON collections(user_id);`,
 		`CREATE INDEX IF NOT EXISTS idx_collections_card ON collections(card_id);`,
+
+		// ── Card catalog (synced from TCGdex, see catalog_sync.go) ──────────
+		`CREATE TABLE IF NOT EXISTS series (
+			id TEXT PRIMARY KEY,
+			name TEXT NOT NULL
+		);`,
+		`CREATE TABLE IF NOT EXISTS sets (
+			id TEXT PRIMARY KEY,
+			name TEXT NOT NULL,
+			logo TEXT DEFAULT '',
+			symbol TEXT DEFAULT '',
+			serie_id TEXT NOT NULL REFERENCES series(id),
+			release_date TEXT DEFAULT '',
+			card_count_total INTEGER DEFAULT 0,
+			card_count_official INTEGER DEFAULT 0,
+			is_pocket BOOLEAN NOT NULL DEFAULT FALSE,
+			raw_data JSONB,
+			updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+		);`,
+		`CREATE TABLE IF NOT EXISTS cards (
+			id TEXT PRIMARY KEY,
+			local_id TEXT NOT NULL,
+			name TEXT NOT NULL,
+			image TEXT DEFAULT '',
+			set_id TEXT NOT NULL REFERENCES sets(id) ON DELETE CASCADE,
+			is_pocket BOOLEAN NOT NULL DEFAULT FALSE,
+			category TEXT,
+			rarity TEXT,
+			hp INTEGER,
+			types TEXT[],
+			raw_data JSONB,
+			details_synced_at TIMESTAMP WITH TIME ZONE,
+			updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+		);`,
+		`CREATE INDEX IF NOT EXISTS idx_sets_pocket ON sets(is_pocket);`,
+		`CREATE INDEX IF NOT EXISTS idx_sets_release_date ON sets(release_date DESC);`,
+		`CREATE INDEX IF NOT EXISTS idx_cards_set ON cards(set_id);`,
+		`CREATE INDEX IF NOT EXISTS idx_cards_pocket ON cards(is_pocket);`,
+		`CREATE INDEX IF NOT EXISTS idx_cards_category ON cards(category);`,
+		`CREATE INDEX IF NOT EXISTS idx_cards_name ON cards(name);`,
+		`CREATE INDEX IF NOT EXISTS idx_cards_pending_details ON cards(id) WHERE raw_data IS NULL;`,
 	}
 
 	for _, query := range queries {

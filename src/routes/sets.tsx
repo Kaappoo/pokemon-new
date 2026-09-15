@@ -9,7 +9,8 @@ function SetsPage() {
     const navigate = useNavigate()
     const [page, setPage] = useState(1)
     const [itemsPerPage, setItemsPerPage] = useState(20)
-    const { sets, isLoading, hasMore } = useSets(page, itemsPerPage)
+    const [includePocket, setIncludePocket] = useState(false)
+    const { sets, isLoading, hasMore } = useSets(page, itemsPerPage, includePocket)
 
     const goToSet = (setId: string) => {
         navigate({ to: '/cards', search: { set: setId } })
@@ -24,6 +25,18 @@ function SetsPage() {
                 <p className="text-sm m-0 text-(--text-secondary) opacity-70">
                     Browse every Pokémon TCG expansion
                 </p>
+                <label className="flex items-center gap-2 text-xs font-medium mt-1 cursor-pointer select-none text-(--text-secondary)">
+                    <input
+                        type="checkbox"
+                        checked={includePocket}
+                        onChange={(e) => {
+                            setIncludePocket(e.target.checked)
+                            setPage(1)
+                        }}
+                        className="accent-(--accent-purple) cursor-pointer"
+                    />
+                    Include Pokémon TCG Pocket sets
+                </label>
             </div>
 
             {isLoading ? (

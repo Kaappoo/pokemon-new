@@ -39,6 +39,29 @@ func main() {
 		port = val
 	}
 
+	// `go run . sync` runs the TCGdex catalog sync once and exits, instead of
+	// starting the HTTP server. Intended to be run manually or on a schedule
+	// (cron / CI job) to keep the sets/cards tables up to date.
+	if len(os.Args) > 1 && os.Args[1] == "sync" {
+		if dbURL == "" {
+			fmt.Println("❌ DATABASE_URL is not set; cannot run catalog sync.")
+			os.Exit(1)
+		}
+		database, err := InitDB(dbURL)
+		if err != nil {
+			fmt.Printf("❌ Fatal error connecting to Neon PostgreSQL database: %v\n", err)
+			os.Exit(1)
+		}
+		defer database.Close()
+
+		if err := SyncCatalog(database); err != nil {
+			fmt.Printf("❌ Catalog sync failed: %v\n", err)
+			os.Exit(1)
+		}
+		fmt.Println("✅ Catalog sync complete.")
+		return
+	}
+
 	fmt.Println("⚡ Starting Poké Cards Go Backend with Neon PostgreSQL...")
 
 	if dbURL == "" {
@@ -61,6 +84,14 @@ func main() {
 	// Public Auth endpoints
 	mux.HandleFunc("/api/register", RegisterHandler)
 	mux.HandleFunc("/api/login", LoginHandler)
+
+	// Card catalog endpoints (synced from TCGdex, see catalog_sync.go)
+	mux.HandleFunc("GET /api/sets", ListSetsHandler)
+	mux.HandleFunc("GET /api/sets/all", ListAllSetsHandler)
+	mux.HandleFunc("GET /api/sets/{id}", GetSetHandler)
+	mux.HandleFunc("GET /api/cards", ListCardsHandler)
+	mux.HandleFunc("GET /api/cards/{id}", GetCardHandler)
+	mux.HandleFunc("GET /api/types", ListTypesHandler)
 
 	// Health check endpoint
 	mux.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {

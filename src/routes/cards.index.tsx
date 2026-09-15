@@ -32,7 +32,8 @@ function CardsPage() {
     )
 
     const { cards, isLoading, filters, updateFilters, hasMore } = useCards(initialFilters)
-    const { sets: allSets } = useAllSets()
+    const [includePocket, setIncludePocket] = useState(false)
+    const { sets: allSets } = useAllSets(includePocket)
     const types = useTypes()
 
     const [searchString, setSearchString] = useState(searchName || '')
@@ -73,12 +74,18 @@ function CardsPage() {
         updateFilters({ category: value || undefined, page: 1 })
     }
 
+    const handleIncludePocketChange = (value: boolean) => {
+        setIncludePocket(value)
+        updateFilters({ includePocket: value, page: 1 })
+    }
+
     const clearAllFilters = () => {
         setSearchString('')
         setSelectedSet('')
         setSelectedType('')
         setSelectedCategory('')
-        updateFilters({ name: undefined, set: undefined, type: undefined, category: undefined, page: 1 })
+        setIncludePocket(false)
+        updateFilters({ name: undefined, set: undefined, type: undefined, category: undefined, includePocket: false, page: 1 })
     }
 
     const viewCard = (cardId: string) => {
@@ -136,6 +143,15 @@ function CardsPage() {
 
                     {filtersOpen && (
                         <div className="flex flex-row lg:flex-col gap-3 flex-wrap">
+                            <label className="flex items-center gap-2 text-xs font-medium cursor-pointer select-none" style={{ color: 'var(--text-secondary)' }}>
+                                <input
+                                    type="checkbox"
+                                    checked={includePocket}
+                                    onChange={(e) => handleIncludePocketChange(e.target.checked)}
+                                    className="accent-(--accent-purple) cursor-pointer"
+                                />
+                                Include Pokémon TCG Pocket
+                            </label>
                             <FilterSelect
                                 label="Set"
                                 value={selectedSet}

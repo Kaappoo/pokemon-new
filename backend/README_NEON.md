@@ -48,5 +48,33 @@ When the Go backend starts up with a valid `DATABASE_URL`, it automatically crea
 - `users` (accounts, hashed passwords, profile info)
 - `wishlists` (saved cards per user)
 - `collections` (user card collection quantities)
+- `series` / `sets` / `cards` (the card catalog, see below)
 
 No manual SQL execution is required!
+
+---
+
+## Card Catalog Sync
+
+Card and set data (`series`, `sets`, `cards` tables) is **not** fetched live
+from the frontend anymore. Instead, the Go backend syncs it from
+[TCGdex](https://tcgdex.dev) into Postgres, and serves it from
+`/api/sets` and `/api/cards`. This is what lets the app:
+- filter out Pokémon TCG Pocket sets/cards by default (`is_pocket` column,
+  derived from TCGdex's `tcgp` serie) instead of mixing them in with the
+  physical TCG, and
+- keep serving cards even if TCGdex is briefly unreachable, and gives a
+  place to patch any specific card found missing.
+
+Run the sync manually (or wire it into a cron job / scheduled CI run) with:
+
+```bash
+cd backend
+go run . sync
+```
+
+This is safe to re-run: it upserts every set, then only fetches full detail
+(rarity, category, hp, types) for cards it hasn't enriched yet, so a first
+run takes a few minutes but later runs are fast and only do work for
+new/changed sets. Run it once after setting up the database, then on a
+schedule (e.g. nightly) to pick up new sets/cards.

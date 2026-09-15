@@ -1,10 +1,3 @@
-import TCGdex, { Query } from '@tcgdex/sdk'
-
-const tcgdex = new TCGdex('en')
-
-export default tcgdex
-export { Query }
-
 // ── Poké Cards Backend API Client ─────────────────────────────
 const API_BASE_URL = 'http://localhost:8080/api'
 
@@ -123,4 +116,57 @@ export const collectionApi = {
 
   removeFromCollection: (cardId: string) =>
     fetchApi<{ success: boolean }>(`/collection?card_id=${encodeURIComponent(cardId)}`, { method: 'DELETE' }),
+}
+
+// ── Card Catalog API (sets/cards, synced server-side from TCGdex) ──────
+// Pokémon TCG Pocket sets/cards are excluded by default; pass
+// includePocket: true to include them.
+
+export interface CatalogSetListItem {
+  id: string
+  name: string
+  logo?: string
+  symbol?: string
+  cardCount: { official: number; total: number }
+}
+
+export interface CatalogCardListItem {
+  id: string
+  localId: string
+  name: string
+  image: string
+}
+
+function buildQuery(params: Record<string, string | number | boolean | undefined>): string {
+  const search = new URLSearchParams()
+  for (const [key, value] of Object.entries(params)) {
+    if (value === undefined || value === '') continue
+    search.set(key, String(value))
+  }
+  const qs = search.toString()
+  return qs ? `?${qs}` : ''
+}
+
+export const catalogApi = {
+  getSets: (params: { page: number; itemsPerPage: number; includePocket?: boolean }) =>
+    fetchApi<CatalogSetListItem[]>(`/sets${buildQuery(params)}`),
+
+  getAllSets: (params: { includePocket?: boolean } = {}) =>
+    fetchApi<CatalogSetListItem[]>(`/sets/all${buildQuery(params)}`),
+
+  getSet: (id: string) => fetchApi<unknown>(`/sets/${encodeURIComponent(id)}`),
+
+  getCards: (params: {
+    page: number
+    itemsPerPage: number
+    name?: string
+    set?: string
+    type?: string
+    category?: string
+    includePocket?: boolean
+  }) => fetchApi<CatalogCardListItem[]>(`/cards${buildQuery(params)}`),
+
+  getCard: (id: string) => fetchApi<unknown>(`/cards/${encodeURIComponent(id)}`),
+
+  getTypes: () => fetchApi<string[]>('/types'),
 }

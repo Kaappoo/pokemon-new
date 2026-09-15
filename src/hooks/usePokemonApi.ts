@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import tcgdex, { Query } from '@/lib/api'
+import { catalogApi } from '@/lib/api'
 
 // ── Cards ──────────────────────────────────────────────
 
@@ -43,6 +43,7 @@ interface CardFilters {
     type?: string
     set?: string
     category?: string
+    includePocket?: boolean
 }
 
 export function useCards(initialFilters: CardFilters) {
@@ -54,18 +55,18 @@ export function useCards(initialFilters: CardFilters) {
     const fetchCards = useCallback(async (f: CardFilters) => {
         setIsLoading(true)
         try {
-            const query = Query.create().paginate(f.page, f.itemsPerPage)
-            if (f.name) query.contains('name', f.name)
-            if (f.type) query.equal('types', f.type)
-            if (f.set) query.equal('set.id', f.set)
-            if (f.category) query.equal('category', f.category)
-            query.not.isNull('image')
+            const results = await catalogApi.getCards({
+                page: f.page,
+                itemsPerPage: f.itemsPerPage,
+                name: f.name,
+                set: f.set,
+                type: f.type,
+                category: f.category,
+                includePocket: f.includePocket,
+            })
 
-            const data = await tcgdex.card.list(query) as CardListItem[] | null
-
-            const results = data ?? []
-            setCards(results)
-            setHasMore(results.length >= f.itemsPerPage)
+            setCards(results ?? [])
+            setHasMore((results ?? []).length >= f.itemsPerPage)
         } catch (err) {
             console.error('Failed to fetch cards:', err)
             setCards([])
@@ -93,17 +94,13 @@ export function useRecentCards(count: number) {
     useEffect(() => {
         async function fetchRecentCards() {
             try {
-                const setsQuery = Query.create()
-                    .paginate(1, 1)
-                    .sort('releaseDate', 'DESC')
-
-                const sets = await tcgdex.set.list(setsQuery)
+                const sets = await catalogApi.getSets({ page: 1, itemsPerPage: 1 })
                 if (!sets || sets.length === 0) {
                     setCards([])
                     return
                 }
-                const fullSet = await tcgdex.set.get(sets[0].id)
-                const results = (fullSet?.cards ?? []) as unknown as CardListItem[]
+                const fullSet = (await catalogApi.getSet(sets[0].id)) as { cards?: CardListItem[] } | null
+                const results = fullSet?.cards ?? []
                 setCards(results.slice(0, count))
             } catch (err) {
                 console.error('Failed to fetch recent cards:', err)
@@ -125,9 +122,9 @@ export function useCard(cardId: string) {
 
     useEffect(() => {
         if (!cardId) return
-        tcgdex.card
-            .get(cardId)
-            .then((data) => setCard(data as unknown as CardDetail | null))
+        catalogApi
+            .getCard(cardId)
+            .then((data) => setCard(data as CardDetail | null))
             .catch((err) => console.error('Failed to fetch card:', err))
             .finally(() => setIsLoading(false))
     }, [cardId])
@@ -147,43 +144,37 @@ interface SetListItem {
 
 export type { SetListItem }
 
-export function useSets(page: number, itemsPerPage: number) {
+export function useSets(page: number, itemsPerPage: number, includePocket = false) {
     const [sets, setSets] = useState<SetListItem[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [hasMore, setHasMore] = useState(true)
 
     useEffect(() => {
         setIsLoading(true)
-        const query = Query.create()
-            .paginate(page, itemsPerPage)
-            .sort('releaseDate', 'DESC')
-
-        tcgdex.set
-            .list(query)
-            .then((data) => {
-                const results = (data ?? []) as unknown as SetListItem[]
-                setSets(results)
-                setHasMore(results.length >= itemsPerPage)
+        catalogApi
+            .getSets({ page, itemsPerPage, includePocket })
+            .then((results) => {
+                setSets(results ?? [])
+                setHasMore((results ?? []).length >= itemsPerPage)
             })
             .catch((err) => console.error('Failed to fetch sets:', err))
             .finally(() => setIsLoading(false))
-    }, [page, itemsPerPage])
+    }, [page, itemsPerPage, includePocket])
 
     return { sets, isLoading, hasMore }
 }
 
-export function useAllSets() {
+export function useAllSets(includePocket = false) {
     const [sets, setSets] = useState<SetListItem[]>([])
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-        const query = Query.create().sort('releaseDate', 'DESC')
-        tcgdex.set
-            .list(query)
-            .then((data) => setSets((data ?? []) as unknown as SetListItem[]))
+        catalogApi
+            .getAllSets({ includePocket })
+            .then((results) => setSets(results ?? []))
             .catch((err) => console.error('Failed to fetch all sets:', err))
             .finally(() => setIsLoading(false))
-    }, [])
+    }, [includePocket])
 
     return { sets, isLoading }
 }
@@ -192,15 +183,10 @@ export function useNewestSet() {
     const [set, setSet] = useState<SetListItem | null>(null)
 
     useEffect(() => {
-        const query = Query.create()
-            .paginate(1, 1)
-            .sort('releaseDate', 'DESC')
-
-        tcgdex.set
-            .list(query)
-            .then((data) => {
-                const results = (data ?? []) as unknown as SetListItem[]
-                if (results.length > 0) setSet(results[0])
+        catalogApi
+            .getSets({ page: 1, itemsPerPage: 1 })
+            .then((results) => {
+                if (results && results.length > 0) setSet(results[0])
             })
             .catch((err) => console.error('Failed to fetch newest set:', err))
     }, [])
@@ -214,9 +200,9 @@ export function useTypes() {
     const [types, setTypes] = useState<string[]>([])
 
     useEffect(() => {
-        tcgdex.type
-            .list()
-            .then((data) => setTypes((data ?? []) as unknown as string[]))
+        catalogApi
+            .getTypes()
+            .then((data) => setTypes(data ?? []))
             .catch((err) => console.error('Failed to fetch types:', err))
     }, [])
 
