@@ -1,5 +1,5 @@
 // ── Poké Cards Backend API Client ─────────────────────────────
-const API_BASE_URL = 'http://localhost:8080/api'
+const API_BASE_URL = (import.meta.env.VITE_API_URL as string | undefined) || 'http://localhost:8080/api'
 
 export interface User {
   id: number
@@ -65,10 +65,17 @@ export async function fetchApi<T>(endpoint: string, options: RequestInit = {}): 
     headers['Authorization'] = `Bearer ${token}`
   }
 
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers,
-  })
+  let response: Response
+  try {
+    response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
+      headers,
+    })
+  } catch (err: any) {
+    throw new Error(
+      `Unable to connect to backend server at ${API_BASE_URL}. Please ensure the backend server is running.`
+    )
+  }
 
   const data = await response.json().catch(() => ({}))
 
