@@ -1,5 +1,7 @@
 // ── Poké Cards Backend API Client ─────────────────────────────
-const API_BASE_URL = 'http://localhost:8080/api'
+// In production this must point at the deployed backend, not localhost -
+// set VITE_API_BASE_URL at build time (see .env.example).
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api'
 
 export interface User {
   id: number
