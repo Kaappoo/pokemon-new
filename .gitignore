@@ -14,3 +14,8 @@ count.txt
 .vinxi
 todos.json
 backend/backend
+
+# This project standardizes on pnpm (pnpm-lock.yaml) - don't let npm/yarn
+# regenerate their own lockfiles, which silently drift from it.
+package-lock.json
+yarn.lock
