@@ -47,6 +47,9 @@ func parsePagination(r *http.Request, defaultPerPage int) (page, perPage int) {
 
 // ListSetsHandler handles GET /api/sets?page=&itemsPerPage=&includePocket=
 func ListSetsHandler(w http.ResponseWriter, r *http.Request) {
+	if !checkDB(w) {
+		return
+	}
 	includePocket := parseIncludePocket(r)
 	page, perPage := parsePagination(r, 20)
 	offset := (page - 1) * perPage
@@ -73,6 +76,9 @@ func ListSetsHandler(w http.ResponseWriter, r *http.Request) {
 // ListAllSetsHandler handles GET /api/sets/all?includePocket= (used for
 // dropdown/filter population - no pagination).
 func ListAllSetsHandler(w http.ResponseWriter, r *http.Request) {
+	if !checkDB(w) {
+		return
+	}
 	includePocket := parseIncludePocket(r)
 
 	rows, err := db.Query(`
@@ -108,6 +114,9 @@ func scanSetRows(rows *sql.Rows) ([]setListItem, error) {
 // GetSetHandler handles GET /api/sets/{id} - full set detail including its
 // card list, straight from the raw TCGdex payload captured at sync time.
 func GetSetHandler(w http.ResponseWriter, r *http.Request) {
+	if !checkDB(w) {
+		return
+	}
 	id := r.PathValue("id")
 
 	var raw []byte
@@ -129,6 +138,9 @@ func GetSetHandler(w http.ResponseWriter, r *http.Request) {
 // ListCardsHandler handles GET /api/cards with name/set/type/category filters
 // plus pagination, defaulting to physical-TCG-only results.
 func ListCardsHandler(w http.ResponseWriter, r *http.Request) {
+	if !checkDB(w) {
+		return
+	}
 	includePocket := parseIncludePocket(r)
 	page, perPage := parsePagination(r, 42)
 	offset := (page - 1) * perPage
@@ -174,6 +186,9 @@ func ListCardsHandler(w http.ResponseWriter, r *http.Request) {
 // it was added to a set after the last sync run), so the page never 404s
 // just because the nightly sync hasn't caught up.
 func GetCardHandler(w http.ResponseWriter, r *http.Request) {
+	if !checkDB(w) {
+		return
+	}
 	id := r.PathValue("id")
 
 	var raw sql.NullString
@@ -207,6 +222,9 @@ func GetCardHandler(w http.ResponseWriter, r *http.Request) {
 // ListTypesHandler handles GET /api/types - every distinct Pokémon type seen
 // across enriched cards, for the filter dropdown.
 func ListTypesHandler(w http.ResponseWriter, r *http.Request) {
+	if !checkDB(w) {
+		return
+	}
 	rows, err := db.Query(`
 		SELECT DISTINCT t FROM cards, unnest(types) AS t
 		ORDER BY t`)

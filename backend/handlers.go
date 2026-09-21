@@ -111,10 +111,22 @@ func CORSMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+func checkDB(w http.ResponseWriter) bool {
+	if db == nil {
+		writeError(w, http.StatusServiceUnavailable, "database connection is not configured")
+		return false
+	}
+	return true
+}
+
 // RegisterHandler handles user registration
 func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	if !checkDB(w) {
 		return
 	}
 
@@ -162,7 +174,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	token, err := GenerateToken(user.ID, user.Username)
 	if err != nil {
-		writeError(w, http.StatusInternalServerError, "failed to generate authentication token")
+		writeError(w, http.StatusInternalServerError, "failed to generate token")
 		return
 	}
 
@@ -176,6 +188,10 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	if !checkDB(w) {
 		return
 	}
 
@@ -228,6 +244,10 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 func GetProfileHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	if !checkDB(w) {
 		return
 	}
 
@@ -290,6 +310,10 @@ func UpdateProfileHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !checkDB(w) {
+		return
+	}
+
 	userID := r.Context().Value(userIDKey).(int)
 
 	var req UpdateProfileRequest
@@ -322,6 +346,10 @@ func GetWishlistHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !checkDB(w) {
+		return
+	}
+
 	userID := r.Context().Value(userIDKey).(int)
 
 	rows, err := db.Query(`
@@ -350,6 +378,10 @@ func GetWishlistHandler(w http.ResponseWriter, r *http.Request) {
 func AddWishlistHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	if !checkDB(w) {
 		return
 	}
 
@@ -387,6 +419,10 @@ func AddWishlistHandler(w http.ResponseWriter, r *http.Request) {
 func DeleteWishlistHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete && r.Method != http.MethodPost {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	if !checkDB(w) {
 		return
 	}
 
@@ -428,6 +464,10 @@ func CheckWishlistHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !checkDB(w) {
+		return
+	}
+
 	userID := r.Context().Value(userIDKey).(int)
 
 	cardID := r.URL.Query().Get("card_id")
@@ -453,6 +493,10 @@ func CheckWishlistHandler(w http.ResponseWriter, r *http.Request) {
 func GetCollectionHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	if !checkDB(w) {
 		return
 	}
 
@@ -484,6 +528,10 @@ func GetCollectionHandler(w http.ResponseWriter, r *http.Request) {
 func AddCollectionHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	if !checkDB(w) {
 		return
 	}
 
@@ -525,6 +573,10 @@ func AddCollectionHandler(w http.ResponseWriter, r *http.Request) {
 func DeleteCollectionHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete && r.Method != http.MethodPost {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	if !checkDB(w) {
 		return
 	}
 
