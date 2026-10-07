@@ -100,7 +100,7 @@ export function useRecentCards(count: number) {
                     return
                 }
                 const fullSet = (await catalogApi.getSet(sets[0].id)) as { cards?: CardListItem[] } | null
-                const results = fullSet?.cards ?? []
+                const results = (fullSet?.cards ?? []).filter((c) => !!c.image)
                 setCards(results.slice(0, count))
             } catch (err) {
                 console.error('Failed to fetch recent cards:', err)

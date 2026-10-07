@@ -218,6 +218,7 @@ function HomePage() {
 }
 
 function CardImage({ card, onClick, size }: { card: CardListItem; onClick: () => void; size: 'large' | 'small' }) {
+  if (!card.image) return null
   const imgUrl = `${card.image}/${size === 'large' ? 'high' : 'low'}.webp`
   const heightClass = size === 'large'
     ? 'h-[180px] sm:h-[250px] md:h-[320px]'
