@@ -3,19 +3,28 @@ node_modules
 dist
 dist-ssr
 *.local
-count.txt
 .env
 *.env
-*.exe
 .nitro
 .tanstack
-.wrangler
 .output
 .vinxi
-todos.json
-backend/backend
+.wrangler
+coverage
+test-results
+playwright-report
+*storybook.log
+storybook-static
+public/sw.js
+public/sw.js.map
+.fallow/
+
+# Local in-process Postgres (PGlite) used when DATABASE_URL is unset.
+.pglite
+.pglite-e2e
 
 # This project standardizes on pnpm (pnpm-lock.yaml) - don't let npm/yarn
 # regenerate their own lockfiles, which silently drift from it.
 package-lock.json
 yarn.lock
+backend/backend

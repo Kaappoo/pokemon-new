@@ -1,39 +1,33 @@
-name: Sync Card Catalog
+name: Sync card catalog
 
-# Keeps the series/sets/cards tables in Postgres up to date with TCGdex.
-# Free to run here (GitHub Actions minutes) instead of paying for a Render
-# Cron Job - see backend/README_NEON.md for details.
+# Keeps the series/sets/cards tables in Neon up to date with TCGdex.
+# See docs/adr/0002-synced-catalog.md.
 
 on:
   schedule:
-    # 03:00 UTC nightly. GitHub may delay scheduled runs by a few minutes
-    # under load; that's fine for this job.
+    # 03:00 UTC nightly. GitHub may delay scheduled runs a little; that's fine.
     - cron: '0 3 * * *'
-  workflow_dispatch: {} # lets you trigger a run manually from the Actions tab
+  workflow_dispatch: {}
 
 jobs:
   sync:
     runs-on: ubuntu-latest
-    # The one-time initial backfill enriches every card individually from
-    # TCGdex (20k+ requests) and can take ~40 min; steady-state nightly runs
-    # only touch new/changed cards and finish in a couple of minutes.
+    # The first backfill enriches 20k+ cards one by one; nightly runs take minutes.
     timeout-minutes: 90
-    defaults:
-      run:
-        working-directory: backend
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
         with:
-          go-version-file: backend/go.mod
-
-      - name: Build sync binary
-        run: go build -o catalog-sync .
-
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Apply migrations
+        env:
+          # Must be the direct (unpooled) Neon connection string.
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: pnpm db:migrate
       - name: Run catalog sync
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: ./catalog-sync sync
+        run: pnpm sync

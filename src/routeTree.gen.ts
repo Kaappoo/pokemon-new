@@ -10,16 +10,32 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CollectionRouteImport } from './routes/collection'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as SetsRouteImport } from './routes/sets'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SignInRouteImport } from './routes/sign-in'
+import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as CardsIndexRouteImport } from './routes/cards.index'
 import { Route as CardsCardIdRouteImport } from './routes/cards.$cardId'
+import { Route as SetsIndexRouteImport } from './routes/sets.index'
+import { Route as SetsSetIdRouteImport } from './routes/sets.$setId'
+import { Route as UUsernameRouteImport } from './routes/u.$username'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiOgDefaultRouteImport } from './routes/api/og/default'
+import { Route as ApiOgCardCardIdRouteImport } from './routes/api/og/card.$cardId'
+import { Route as ApiOgCollectorUsernameRouteImport } from './routes/api/og/collector.$username'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CollectionRoute = CollectionRouteImport.update({
+  id: '/collection',
+  path: '/collection',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -37,6 +53,21 @@ const SetsRoute = SetsRouteImport.update({
   path: '/sets',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignInRoute = SignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignUpRoute = SignUpRouteImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WishlistRoute = WishlistRouteImport.update({
   id: '/wishlist',
   path: '/wishlist',
@@ -52,73 +83,181 @@ const CardsCardIdRoute = CardsCardIdRouteImport.update({
   path: '/cards/$cardId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SetsIndexRoute = SetsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SetsRoute,
+} as any)
+const SetsSetIdRoute = SetsSetIdRouteImport.update({
+  id: '/$setId',
+  path: '/$setId',
+  getParentRoute: () => SetsRoute,
+} as any)
+const UUsernameRoute = UUsernameRouteImport.update({
+  id: '/u/$username',
+  path: '/u/$username',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiOgDefaultRoute = ApiOgDefaultRouteImport.update({
+  id: '/api/og/default',
+  path: '/api/og/default',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiOgCardCardIdRoute = ApiOgCardCardIdRouteImport.update({
+  id: '/api/og/card/$cardId',
+  path: '/api/og/card/$cardId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiOgCollectorUsernameRoute = ApiOgCollectorUsernameRouteImport.update({
+  id: '/api/og/collector/$username',
+  path: '/api/og/collector/$username',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/collection': typeof CollectionRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
-  '/sets': typeof SetsRoute
+  '/sets': typeof SetsRouteWithChildren
+  '/settings': typeof SettingsRoute
+  '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
   '/wishlist': typeof WishlistRoute
   '/cards/$cardId': typeof CardsCardIdRoute
+  '/sets/$setId': typeof SetsSetIdRoute
+  '/u/$username': typeof UUsernameRoute
   '/cards/': typeof CardsIndexRoute
+  '/sets/': typeof SetsIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/og/default': typeof ApiOgDefaultRoute
+  '/api/og/card/$cardId': typeof ApiOgCardCardIdRoute
+  '/api/og/collector/$username': typeof ApiOgCollectorUsernameRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/collection': typeof CollectionRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
-  '/sets': typeof SetsRoute
+  '/settings': typeof SettingsRoute
+  '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
   '/wishlist': typeof WishlistRoute
   '/cards/$cardId': typeof CardsCardIdRoute
+  '/sets/$setId': typeof SetsSetIdRoute
+  '/u/$username': typeof UUsernameRoute
   '/cards': typeof CardsIndexRoute
+  '/sets': typeof SetsIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/og/default': typeof ApiOgDefaultRoute
+  '/api/og/card/$cardId': typeof ApiOgCardCardIdRoute
+  '/api/og/collector/$username': typeof ApiOgCollectorUsernameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/collection': typeof CollectionRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
-  '/sets': typeof SetsRoute
+  '/sets': typeof SetsRouteWithChildren
+  '/settings': typeof SettingsRoute
+  '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
   '/wishlist': typeof WishlistRoute
   '/cards/$cardId': typeof CardsCardIdRoute
+  '/sets/$setId': typeof SetsSetIdRoute
+  '/u/$username': typeof UUsernameRoute
   '/cards/': typeof CardsIndexRoute
+  '/sets/': typeof SetsIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/og/default': typeof ApiOgDefaultRoute
+  '/api/og/card/$cardId': typeof ApiOgCardCardIdRoute
+  '/api/og/collector/$username': typeof ApiOgCollectorUsernameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/collection'
     | '/login'
     | '/profile'
     | '/sets'
+    | '/settings'
+    | '/sign-in'
+    | '/sign-up'
     | '/wishlist'
     | '/cards/$cardId'
+    | '/sets/$setId'
+    | '/u/$username'
     | '/cards/'
+    | '/sets/'
+    | '/api/auth/$'
+    | '/api/og/default'
+    | '/api/og/card/$cardId'
+    | '/api/og/collector/$username'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/collection'
     | '/login'
     | '/profile'
-    | '/sets'
+    | '/settings'
+    | '/sign-in'
+    | '/sign-up'
     | '/wishlist'
     | '/cards/$cardId'
+    | '/sets/$setId'
+    | '/u/$username'
     | '/cards'
+    | '/sets'
+    | '/api/auth/$'
+    | '/api/og/default'
+    | '/api/og/card/$cardId'
+    | '/api/og/collector/$username'
   id:
     | '__root__'
     | '/'
+    | '/collection'
     | '/login'
     | '/profile'
     | '/sets'
+    | '/settings'
+    | '/sign-in'
+    | '/sign-up'
     | '/wishlist'
     | '/cards/$cardId'
+    | '/sets/$setId'
+    | '/u/$username'
     | '/cards/'
+    | '/sets/'
+    | '/api/auth/$'
+    | '/api/og/default'
+    | '/api/og/card/$cardId'
+    | '/api/og/collector/$username'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CollectionRoute: typeof CollectionRoute
   LoginRoute: typeof LoginRoute
   ProfileRoute: typeof ProfileRoute
-  SetsRoute: typeof SetsRoute
+  SetsRoute: typeof SetsRouteWithChildren
+  SettingsRoute: typeof SettingsRoute
+  SignInRoute: typeof SignInRoute
+  SignUpRoute: typeof SignUpRoute
   WishlistRoute: typeof WishlistRoute
   CardsCardIdRoute: typeof CardsCardIdRoute
+  UUsernameRoute: typeof UUsernameRoute
   CardsIndexRoute: typeof CardsIndexRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiOgDefaultRoute: typeof ApiOgDefaultRoute
+  ApiOgCardCardIdRoute: typeof ApiOgCardCardIdRoute
+  ApiOgCollectorUsernameRoute: typeof ApiOgCollectorUsernameRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -128,6 +267,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/collection': {
+      id: '/collection'
+      path: '/collection'
+      fullPath: '/collection'
+      preLoaderRoute: typeof CollectionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -151,6 +297,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SetsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-in': {
+      id: '/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof SignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-up': {
+      id: '/sign-up'
+      path: '/sign-up'
+      fullPath: '/sign-up'
+      preLoaderRoute: typeof SignUpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/wishlist': {
       id: '/wishlist'
       path: '/wishlist'
@@ -172,17 +339,87 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CardsCardIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sets/': {
+      id: '/sets/'
+      path: '/'
+      fullPath: '/sets/'
+      preLoaderRoute: typeof SetsIndexRouteImport
+      parentRoute: typeof SetsRoute
+    }
+    '/sets/$setId': {
+      id: '/sets/$setId'
+      path: '/$setId'
+      fullPath: '/sets/$setId'
+      preLoaderRoute: typeof SetsSetIdRouteImport
+      parentRoute: typeof SetsRoute
+    }
+    '/u/$username': {
+      id: '/u/$username'
+      path: '/u/$username'
+      fullPath: '/u/$username'
+      preLoaderRoute: typeof UUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/og/default': {
+      id: '/api/og/default'
+      path: '/api/og/default'
+      fullPath: '/api/og/default'
+      preLoaderRoute: typeof ApiOgDefaultRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/og/card/$cardId': {
+      id: '/api/og/card/$cardId'
+      path: '/api/og/card/$cardId'
+      fullPath: '/api/og/card/$cardId'
+      preLoaderRoute: typeof ApiOgCardCardIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/og/collector/$username': {
+      id: '/api/og/collector/$username'
+      path: '/api/og/collector/$username'
+      fullPath: '/api/og/collector/$username'
+      preLoaderRoute: typeof ApiOgCollectorUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface SetsRouteChildren {
+  SetsSetIdRoute: typeof SetsSetIdRoute
+  SetsIndexRoute: typeof SetsIndexRoute
+}
+
+const SetsRouteChildren: SetsRouteChildren = {
+  SetsSetIdRoute: SetsSetIdRoute,
+  SetsIndexRoute: SetsIndexRoute,
+}
+
+const SetsRouteWithChildren = SetsRoute._addFileChildren(SetsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CollectionRoute: CollectionRoute,
   LoginRoute: LoginRoute,
   ProfileRoute: ProfileRoute,
-  SetsRoute: SetsRoute,
+  SetsRoute: SetsRouteWithChildren,
+  SettingsRoute: SettingsRoute,
+  SignInRoute: SignInRoute,
+  SignUpRoute: SignUpRoute,
   WishlistRoute: WishlistRoute,
   CardsCardIdRoute: CardsCardIdRoute,
+  UUsernameRoute: UUsernameRoute,
   CardsIndexRoute: CardsIndexRoute,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiOgDefaultRoute: ApiOgDefaultRoute,
+  ApiOgCardCardIdRoute: ApiOgCardCardIdRoute,
+  ApiOgCollectorUsernameRoute: ApiOgCollectorUsernameRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
