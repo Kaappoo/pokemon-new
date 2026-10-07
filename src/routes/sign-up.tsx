@@ -6,7 +6,7 @@ import { AuthShell } from '#/components/auth/auth-shell.tsx'
 import { Field, FieldDescription, FieldError, FieldLabel } from '#/components/ui/field.tsx'
 import { Input } from '#/components/ui/input.tsx'
 import { signUp } from '#/lib/auth-client.ts'
-import { sessionQuery } from '#/lib/queries.ts'
+import { refreshSession } from '#/lib/queries.ts'
 import { SubmitButton } from '#/components/ui/submit-button.tsx'
 import { SITE_NAME } from '#/lib/seo.ts'
 
@@ -58,7 +58,7 @@ function SignUp() {
         displayUsername: username,
       })
       if (result.error) return setErrors({ form: result.error.message ?? 'Could not create your account' })
-      await queryClient.invalidateQueries({ queryKey: sessionQuery.queryKey })
+      await refreshSession(queryClient)
       await router.invalidate()
       await router.navigate({ href: redirectTo ?? '/' })
     } finally {

@@ -10,7 +10,7 @@ import { Input } from '#/components/ui/input.tsx'
 import { Separator } from '#/components/ui/separator.tsx'
 import { toast } from '#/components/ui/toast.tsx'
 import { signIn } from '#/lib/auth-client.ts'
-import { sessionQuery } from '#/lib/queries.ts'
+import { refreshSession } from '#/lib/queries.ts'
 import { SubmitButton } from '#/components/ui/submit-button.tsx'
 import { SITE_NAME } from '#/lib/seo.ts'
 
@@ -34,7 +34,7 @@ function SignIn() {
   const [magicSent, setMagicSent] = useState(false)
 
   const done = async () => {
-    await queryClient.invalidateQueries({ queryKey: sessionQuery.queryKey })
+    await refreshSession(queryClient)
     await router.invalidate()
     await router.navigate({ href: redirectTo ?? '/' })
   }

@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test'
+import { expect, type Page } from '@playwright/test'
 
 /** Navigates and waits until React has hydrated, so clicks and typing are handled by the app. */
 export async function visit(page: Page, path: string) {
@@ -13,6 +13,8 @@ export async function signInAsAsh(page: Page) {
   await page.getByLabel('Password').fill('pallet-town-1')
   await page.getByRole('button', { name: 'Sign in', exact: true }).click()
   await page.waitForURL('/')
+  // The header must pick up the new session without a reload.
+  await expect(page.getByRole('button', { name: 'Account menu' })).toBeVisible()
 }
 
 /** Card art lives on a third-party CDN; keep e2e hermetic. */

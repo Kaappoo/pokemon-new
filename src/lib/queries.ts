@@ -1,4 +1,4 @@
-import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query'
+import { infiniteQueryOptions, queryOptions, type QueryClient } from '@tanstack/react-query'
 import { getCardStatus, getMyCollection, getWishlist } from '#/server/functions/binder.ts'
 import { getCard, getCatalogHome, getSet, listSets, listTypes, searchCards } from '#/server/functions/catalog.ts'
 import { getMyProfile, getProfile, getProfileCollection } from '#/server/functions/profiles.ts'
@@ -14,6 +14,14 @@ export const sessionQuery = queryOptions({
   queryFn: () => getSessionUser(),
   staleTime: MINUTE,
 })
+
+/**
+ * Re-reads the session after sign-in, sign-up or a profile change. Not
+ * `invalidateQueries`: the session entry is hydrated from SSR and nothing
+ * observes it, so an invalidation has no queryFn to refetch with and the
+ * root route keeps the stale user until a reload.
+ */
+export const refreshSession = (queryClient: QueryClient) => queryClient.fetchQuery({ ...sessionQuery, staleTime: 0 })
 
 /* ---------------------------------------------------------------- */
 /* Catalog — changes once a night when the sync runs.               */

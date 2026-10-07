@@ -11,7 +11,7 @@ import { Textarea } from '#/components/ui/textarea.tsx'
 import { toast } from '#/components/ui/toast.tsx'
 import { fieldErrors } from '#/lib/form-errors.ts'
 import { requireAuth } from '#/lib/guards.ts'
-import { myProfileQuery, sessionQuery } from '#/lib/queries.ts'
+import { myProfileQuery, refreshSession } from '#/lib/queries.ts'
 import { SITE_NAME } from '#/lib/seo.ts'
 import { updateProfile } from '#/server/functions/profiles.ts'
 import { profileInput } from '#/shared/schemas.ts'
@@ -35,7 +35,7 @@ function Settings() {
     mutationFn: (data: Parameters<typeof update>[0]['data']) => update({ data }),
     onSuccess: async ({ username }) => {
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: sessionQuery.queryKey }),
+        refreshSession(queryClient),
         queryClient.invalidateQueries({ queryKey: ['profile'] }),
       ])
       await router.invalidate()
