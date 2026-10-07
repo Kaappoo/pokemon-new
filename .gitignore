@@ -27,4 +27,3 @@ public/sw.js.map
 # regenerate their own lockfiles, which silently drift from it.
 package-lock.json
 yarn.lock
-backend/backend
