@@ -12,8 +12,17 @@ import { runtime } from './runtime.ts'
 
 const send = (email: Email) => runtime.runPromise(Mailer.use((m) => m.send(email)).pipe(Effect.orDie))
 
+// Vercel serves one deployment under several hosts (production domain, *.vercel.app
+// alias, per-branch and per-deployment preview URLs); sign-in must work from each.
+const vercelOrigins = [
+  process.env.VERCEL_PROJECT_PRODUCTION_URL,
+  process.env.VERCEL_BRANCH_URL,
+  process.env.VERCEL_URL,
+].flatMap((host) => (host ? [`https://${host}`] : []))
+
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL ?? process.env.APP_URL,
+  trustedOrigins: [process.env.APP_URL, ...vercelOrigins].filter((o): o is string => Boolean(o)),
   secret: process.env.BETTER_AUTH_SECRET,
   database: drizzleAdapter(database, { provider: 'pg', schema }),
   emailAndPassword: {
