@@ -17,6 +17,12 @@ describe('syncCatalog', () => {
       const db = yield* Db
       const pocket = yield* db.query((d) => d.select({ id: sets.id }).from(sets).where(eq(sets.isPocket, true)))
       expect(pocket).toEqual([{ id: 'A1' }])
+      const live = yield* db.query((d) => d.select({ id: sets.id, liveCode: sets.liveCode }).from(sets).orderBy(sets.id))
+      expect(live).toEqual([
+        { id: 'A1', liveCode: null },
+        { id: 'base1', liveCode: null },
+        { id: 'sv01', liveCode: 'SVI' },
+      ])
 
       const [charizard] = yield* db.query((d) => d.select().from(cards).where(eq(cards.id, 'base1-4')))
       expect(charizard).toMatchObject({ name: 'Charizard', category: 'Pokemon', types: ['Fire'], isPocket: false })

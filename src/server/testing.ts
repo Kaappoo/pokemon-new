@@ -1,5 +1,6 @@
 import { Effect, Layer } from 'effect'
 import { newId } from '#/domain/ids.ts'
+import { liveSetCode } from '#/domain/catalog.ts'
 import type { TcgdexCard, TcgdexSet } from '#/domain/tcgdex.ts'
 import { CurrentUser, type SessionUser } from './current-user.ts'
 import { Db } from './db/client.ts'
@@ -45,6 +46,7 @@ export const fakeSets: Record<string, TcgdexSet> = {
     serie: { id: 'sv', name: 'Scarlet & Violet' },
     releaseDate: '2023-03-31',
     cardCount: { official: 198, total: 258 },
+    tcgOnline: 'SVI',
     cards: [
       { id: 'sv01-001', localId: '001', name: 'Pineco', image: 'https://assets.tcgdex.net/en/sv/sv01/001' },
       { id: 'sv01-002', localId: '002', name: 'Forretress ex', image: null },
@@ -110,6 +112,7 @@ export const seedCatalog = Effect.fn('testing.seedCatalog')(function* () {
         cardCountOfficial: set.cardCount?.official ?? 0,
         cardCountTotal: set.cardCount?.total ?? 0,
         isPocket,
+        liveCode: liveSetCode(set),
       }),
     )
     yield* db.query((d) =>

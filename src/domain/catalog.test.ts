@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { cardImageUrl, compareLocalIds, isPocketSerie, printedNumber, setAssetUrl } from './catalog.ts'
+import { cardImageUrl, compareLocalIds, isPocketSerie, liveSetCode, normalizeCardNumber, printedNumber, setAssetUrl } from './catalog.ts'
 
 describe('catalog rules', () => {
   it('treats only the tcgp serie as Pokémon TCG Pocket', () => {
@@ -27,5 +27,19 @@ describe('catalog rules', () => {
     expect(printedNumber('4', 102)).toBe('4/102')
     expect(printedNumber('TG05', 195)).toBe('TG05')
     expect(printedNumber('4', null)).toBe('4')
+  })
+
+  it('reads the TCG Live set code TCGdex publishes', () => {
+    expect(liveSetCode({ tcgOnline: 'TWM' })).toBe('TWM')
+    expect(liveSetCode({ tcgOnline: null, abbreviation: { official: 'svi' } })).toBe('SVI')
+    expect(liveSetCode({ tcgOnline: '', abbreviation: null })).toBeNull()
+  })
+
+  it('compares card numbers without TCGdex zero padding', () => {
+    expect(normalizeCardNumber('001')).toBe('1')
+    expect(normalizeCardNumber('130')).toBe('130')
+    expect(normalizeCardNumber('0')).toBe('0')
+    expect(normalizeCardNumber('tg05')).toBe('TG05')
+    expect(normalizeCardNumber('SV001')).toBe('SV001')
   })
 })

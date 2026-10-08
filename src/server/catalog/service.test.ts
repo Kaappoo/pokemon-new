@@ -84,4 +84,22 @@ describe('CatalogService', () => {
       expect(home.latestCards.map((c) => c.name)).toEqual(['Pineco'])
     }).pipe(Effect.provide(TestLayer)),
   )
+
+  it.effect('resolves TCG Live deck-list references to cards, ignoring zero padding and unknown cards', () =>
+    Effect.gen(function* () {
+      yield* seedCatalog()
+      const catalog = yield* CatalogService
+      const found = yield* catalog.lookupLiveCards([
+        { setCode: 'SVI', number: '1' },
+        { setCode: 'svi', number: '002' },
+        { setCode: 'SVI', number: '999' },
+        { setCode: 'XXX', number: '1' },
+      ])
+      expect(found).toEqual([
+        { setCode: 'SVI', number: '1', id: 'sv01-001', name: 'Pineco', image: 'https://assets.tcgdex.net/en/sv/sv01/001' },
+        { setCode: 'svi', number: '002', id: 'sv01-002', name: 'Forretress ex', image: null },
+      ])
+      expect(yield* catalog.lookupLiveCards([])).toEqual([])
+    }).pipe(Effect.provide(TestLayer)),
+  )
 })

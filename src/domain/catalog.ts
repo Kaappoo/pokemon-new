@@ -55,3 +55,21 @@ export const compareLocalIds = (a: string, b: string): number => {
 /** "4/102" — the collector number as printed, when the set's official count is known. */
 export const printedNumber = (localId: string, officialCount: number | null | undefined): string =>
   officialCount && /^\d+$/.test(localId) ? `${localId}/${officialCount}` : localId
+
+/**
+ * The set code Pokémon TCG Live deck exports use ("4 Dragapult ex TWM 130").
+ * TCGdex publishes it as `tcgOnline`, or as the official abbreviation on sets
+ * without one. Null for sets that never made it into TCG Live / Online.
+ */
+export const liveSetCode = (set: {
+  readonly tcgOnline?: string | null
+  readonly abbreviation?: { readonly official?: string | null } | null
+}): string | null => (set.tcgOnline || set.abbreviation?.official || '').trim().toUpperCase() || null
+
+/**
+ * Card numbers compared across sources: TCGdex pads Scarlet & Violet numbers
+ * ("001") but deck exports don't ("1"), so leading zeros are dropped. Prefixed
+ * numbers ("TG05", "SV001") keep theirs.
+ */
+export const normalizeCardNumber = (number: string): string =>
+  number.trim().toUpperCase().replace(/^0+(?=\d)/, '')
