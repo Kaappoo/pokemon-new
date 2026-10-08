@@ -1,6 +1,6 @@
 import { asc, eq, isNull, sql } from 'drizzle-orm'
 import { Clock, Effect, Ref, Result, Schema } from 'effect'
-import { isPocketSerie } from '#/domain/catalog.ts'
+import { isPocketSerie, liveSetCode } from '#/domain/catalog.ts'
 import { Db } from '../db/client.ts'
 import { cards, series, sets } from '../db/schema.ts'
 import { Tcgdex } from '../tcgdex/client.ts'
@@ -67,6 +67,7 @@ export const syncCatalog = Effect.fn('CatalogSync.run')(function* (options: { re
       cardCountTotal: set.cardCount?.total ?? 0,
       cardCountOfficial: set.cardCount?.official ?? 0,
       isPocket,
+      liveCode: liveSetCode(set),
       rawData: raw,
       updatedAt: now,
     }

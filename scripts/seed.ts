@@ -27,6 +27,7 @@ const fixtureSets: Array<TcgdexSet> = [
     serie: { id: 'sv', name: 'Scarlet & Violet' },
     releaseDate: '2023-09-22',
     logo: img('sv', 'sv03.5', 'logo'),
+    tcgOnline: 'MEW',
     cardCount: { official: 165, total: 207 },
     cards: [
       ['001', 'Bulbasaur'],

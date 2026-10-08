@@ -61,3 +61,14 @@ export const profileInput = z.object({
   image: z.url('Use a full https:// image link').nullable().optional().or(z.literal('')),
 })
 export type ProfileInput = z.infer<typeof profileInput>
+
+/**
+ * POST /api/cards/lookup — Pokémon TCG Live deck-list references ("TWM 130")
+ * to resolve. Used by tcgRank to show card art for its deck lists.
+ */
+export const liveCardLookupInput = z.object({
+  cards: z
+    .array(z.object({ setCode: z.string().trim().min(1).max(12), number: z.string().trim().min(1).max(12) }))
+    .max(120),
+})
+export type LiveCardLookupInput = z.infer<typeof liveCardLookupInput>

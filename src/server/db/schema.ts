@@ -45,6 +45,8 @@ export const sets = pgTable(
     cardCountOfficial: integer('card_count_official').default(0),
     /** True for Pokémon TCG Pocket (the mobile game), which is not the physical TCG. */
     isPocket: boolean('is_pocket').notNull().default(false),
+    /** Pokémon TCG Live set code ("TWM"), see `liveSetCode`. Null when TCGdex doesn't list one. */
+    liveCode: text('live_code'),
     /** The complete TCGdex set payload captured at sync time. */
     rawData: jsonb('raw_data'),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow(),
@@ -53,6 +55,7 @@ export const sets = pgTable(
     foreignKey({ name: 'sets_serie_id_fkey', columns: [t.serieId], foreignColumns: [series.id] }),
     index('idx_sets_pocket').on(t.isPocket),
     index('idx_sets_release_date').on(t.releaseDate.desc()),
+    index('idx_sets_live_code').on(t.liveCode),
   ],
 )
 

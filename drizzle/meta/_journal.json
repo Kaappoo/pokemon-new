@@ -15,6 +15,13 @@
       "when": 1791382858476,
       "tag": "0001_adopt_legacy_accounts",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791470421435,
+      "tag": "0002_set_live_codes",
+      "breakpoints": true
     }
   ]
 }

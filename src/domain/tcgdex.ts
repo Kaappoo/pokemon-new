@@ -35,6 +35,9 @@ export const TcgdexSet = Schema.Struct({
   serie: Schema.Struct({ id: Schema.String, name: Schema.String }),
   releaseDate: maybe(Schema.String),
   cardCount: maybe(CardCount),
+  /** Set code used by Pokémon TCG Live deck exports ("TWM"), when TCGdex knows it. */
+  tcgOnline: maybe(Schema.String),
+  abbreviation: maybe(Schema.Struct({ official: maybe(Schema.String) })),
   cards: Schema.Array(CardResume),
 })
 export type TcgdexSet = typeof TcgdexSet.Type

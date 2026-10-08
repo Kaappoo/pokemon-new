@@ -1,5 +1,6 @@
-import { and, asc, count, desc, eq, exists, ilike, ne, sql, type SQL } from 'drizzle-orm'
+import { and, asc, count, desc, eq, exists, ilike, inArray, ne, sql, type SQL } from 'drizzle-orm'
 import { Clock, Context, Effect, Layer, Option, Schema } from 'effect'
+import { normalizeCardNumber } from '#/domain/catalog.ts'
 import { TcgdexCard } from '#/domain/tcgdex.ts'
 import type { CardSearchInput } from '#/shared/schemas.ts'
 import { Db } from '../db/client.ts'
@@ -53,6 +54,18 @@ export interface CardView {
   readonly set: SetSummary
   /** Full TCGdex detail (attacks, weaknesses, legality…). Null if TCGdex could not be reached for an un-enriched card. */
   readonly detail: TcgdexCard | null
+}
+
+export interface LiveCardRef {
+  readonly setCode: string
+  readonly number: string
+}
+
+export interface LiveCardMatch extends LiveCardRef {
+  readonly id: string
+  readonly name: string
+  /** TCGdex image base URL, null when the art isn't published yet. */
+  readonly image: string | null
 }
 
 export interface CatalogHome {
@@ -291,7 +304,40 @@ const make = Effect.gen(function* () {
     } satisfies CatalogHome
   })
 
-  return { listSets, getSet, searchCards, getCard, types, home }
+  /**
+   * Resolves Pokémon TCG Live deck-list references ("TWM 130") to catalog
+   * cards. Unknown references are left out. When a code and number match more
+   * than one card (a code shared by a main set and its subset), the one with
+   * art from the newest set wins.
+   */
+  const lookupLiveCards = Effect.fn('CatalogService.lookupLiveCards')(function* (refs: ReadonlyArray<LiveCardRef>) {
+    const wanted = refs.map((ref) => ({ ...ref, code: ref.setCode.trim().toUpperCase(), num: normalizeCardNumber(ref.number) }))
+    const codes = [...new Set(wanted.map((w) => w.code))]
+    const numbers = [...new Set(wanted.map((w) => w.num))]
+    if (codes.length === 0) return []
+
+    const normalizedLocalId = sql<string>`regexp_replace(upper(${cards.localId}), '^0+(?=[0-9])', '')`
+    const rows = yield* db.query((d) =>
+      d
+        .select({ id: cards.id, name: cards.name, image: cards.image, code: sets.liveCode, num: normalizedLocalId })
+        .from(cards)
+        .innerJoin(sets, eq(sets.id, cards.setId))
+        .where(and(inArray(sets.liveCode, codes), inArray(normalizedLocalId, numbers), eq(sets.isPocket, false)))
+        .orderBy(sql`(coalesce(${cards.image}, '') <> '') desc`, desc(sets.releaseDate), asc(cards.id)),
+    )
+
+    const best = new Map<string, (typeof rows)[number]>()
+    for (const row of rows) {
+      const key = `${row.code} ${row.num}`
+      if (!best.has(key)) best.set(key, row)
+    }
+    return wanted.flatMap((w): Array<LiveCardMatch> => {
+      const row = best.get(`${w.code} ${w.num}`)
+      return row ? [{ setCode: w.setCode, number: w.number, id: row.id, name: row.name, image: row.image || null }] : []
+    })
+  })
+
+  return { listSets, getSet, searchCards, getCard, types, home, lookupLiveCards }
 })
 
 export class CatalogService extends Context.Service<CatalogService, Effect.Success<typeof make>>()(
