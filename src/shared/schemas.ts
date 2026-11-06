@@ -72,3 +72,13 @@ export const liveCardLookupInput = z.object({
     .max(120),
 })
 export type LiveCardLookupInput = z.infer<typeof liveCardLookupInput>
+
+/**
+ * Query string of `GET /api/cards/search`, the Pokémon card search other apps (tcgRank's partner picker) call.
+ * A query of at least 2 characters keeps it from paging the whole catalog.
+ */
+export const pokemonSearchQuery = z.object({
+  q: z.string().trim().min(2, 'Search with at least 2 characters').max(80),
+  page: z.coerce.number().int().min(1).max(500).default(1),
+  perPage: z.coerce.number().int().min(1).max(96).default(24),
+})
