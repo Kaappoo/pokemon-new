@@ -25,6 +25,7 @@ import { Route as SetsSetIdRouteImport } from './routes/sets.$setId'
 import { Route as UUsernameRouteImport } from './routes/u.$username'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiCardsLookupRouteImport } from './routes/api/cards/lookup'
+import { Route as ApiCardsSearchRouteImport } from './routes/api/cards/search'
 import { Route as ApiOgDefaultRouteImport } from './routes/api/og/default'
 import { Route as ApiOgCardCardIdRouteImport } from './routes/api/og/card.$cardId'
 import { Route as ApiOgCollectorUsernameRouteImport } from './routes/api/og/collector.$username'
@@ -109,6 +110,11 @@ const ApiCardsLookupRoute = ApiCardsLookupRouteImport.update({
   path: '/api/cards/lookup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCardsSearchRoute = ApiCardsSearchRouteImport.update({
+  id: '/api/cards/search',
+  path: '/api/cards/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiOgDefaultRoute = ApiOgDefaultRouteImport.update({
   id: '/api/og/default',
   path: '/api/og/default',
@@ -142,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/sets/': typeof SetsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/cards/lookup': typeof ApiCardsLookupRoute
+  '/api/cards/search': typeof ApiCardsSearchRoute
   '/api/og/default': typeof ApiOgDefaultRoute
   '/api/og/card/$cardId': typeof ApiOgCardCardIdRoute
   '/api/og/collector/$username': typeof ApiOgCollectorUsernameRoute
@@ -162,6 +169,7 @@ export interface FileRoutesByTo {
   '/sets': typeof SetsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/cards/lookup': typeof ApiCardsLookupRoute
+  '/api/cards/search': typeof ApiCardsSearchRoute
   '/api/og/default': typeof ApiOgDefaultRoute
   '/api/og/card/$cardId': typeof ApiOgCardCardIdRoute
   '/api/og/collector/$username': typeof ApiOgCollectorUsernameRoute
@@ -184,6 +192,7 @@ export interface FileRoutesById {
   '/sets/': typeof SetsIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/cards/lookup': typeof ApiCardsLookupRoute
+  '/api/cards/search': typeof ApiCardsSearchRoute
   '/api/og/default': typeof ApiOgDefaultRoute
   '/api/og/card/$cardId': typeof ApiOgCardCardIdRoute
   '/api/og/collector/$username': typeof ApiOgCollectorUsernameRoute
@@ -207,6 +216,7 @@ export interface FileRouteTypes {
     | '/sets/'
     | '/api/auth/$'
     | '/api/cards/lookup'
+    | '/api/cards/search'
     | '/api/og/default'
     | '/api/og/card/$cardId'
     | '/api/og/collector/$username'
@@ -227,6 +237,7 @@ export interface FileRouteTypes {
     | '/sets'
     | '/api/auth/$'
     | '/api/cards/lookup'
+    | '/api/cards/search'
     | '/api/og/default'
     | '/api/og/card/$cardId'
     | '/api/og/collector/$username'
@@ -248,6 +259,7 @@ export interface FileRouteTypes {
     | '/sets/'
     | '/api/auth/$'
     | '/api/cards/lookup'
+    | '/api/cards/search'
     | '/api/og/default'
     | '/api/og/card/$cardId'
     | '/api/og/collector/$username'
@@ -268,6 +280,7 @@ export interface RootRouteChildren {
   CardsIndexRoute: typeof CardsIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiCardsLookupRoute: typeof ApiCardsLookupRoute
+  ApiCardsSearchRoute: typeof ApiCardsSearchRoute
   ApiOgDefaultRoute: typeof ApiOgDefaultRoute
   ApiOgCardCardIdRoute: typeof ApiOgCardCardIdRoute
   ApiOgCollectorUsernameRoute: typeof ApiOgCollectorUsernameRoute
@@ -387,6 +400,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCardsLookupRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/cards/search': {
+      id: '/api/cards/search'
+      path: '/api/cards/search'
+      fullPath: '/api/cards/search'
+      preLoaderRoute: typeof ApiCardsSearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/og/default': {
       id: '/api/og/default'
       path: '/api/og/default'
@@ -438,6 +458,7 @@ const rootRouteChildren: RootRouteChildren = {
   CardsIndexRoute: CardsIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiCardsLookupRoute: ApiCardsLookupRoute,
+  ApiCardsSearchRoute: ApiCardsSearchRoute,
   ApiOgDefaultRoute: ApiOgDefaultRoute,
   ApiOgCardCardIdRoute: ApiOgCardCardIdRoute,
   ApiOgCollectorUsernameRoute: ApiOgCollectorUsernameRoute,
