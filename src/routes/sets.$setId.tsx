@@ -6,6 +6,7 @@ import { CardGrid } from '#/components/cards/card-grid.tsx'
 import { CardTile } from '#/components/cards/card-tile.tsx'
 import { Page } from '#/components/layout/page.tsx'
 import { ReleaseDate } from '#/components/sets/release-date.tsx'
+import { SetProgress } from '#/components/sets/set-progress.tsx'
 import { Badge } from '#/components/ui/badge.tsx'
 import { buttonVariants } from '#/components/ui/button.tsx'
 import { setAssetUrl } from '#/domain/catalog.ts'
@@ -39,7 +40,6 @@ function SetPage() {
     for (const item of collection ?? []) if (item.setId === setId) map.set(item.id, item.quantity)
     return map
   }, [collection, setId])
-  const completion = cards.length ? owned.size / cards.length : 0
 
   return (
     <Page>
@@ -67,28 +67,11 @@ function SetPage() {
           </div>
         </div>
         {user ? (
-          <div className="relative flex flex-col gap-2 border-t border-line pt-6 sm:mr-[20%]">
-            <div className="flex items-baseline justify-between gap-4">
-              <span className="text-sm font-semibold text-paper-dim">Your progress</span>
-              <span className="font-numerals text-3xl leading-none">
-                {owned.size}
-                <span className="text-paper-dim">/{cards.length}</span>
-              </span>
-            </div>
-            <div
-              className="h-2 overflow-hidden rounded-full bg-surface-raised"
-              role="progressbar"
-              aria-label="Cards collected from this set"
-              aria-valuemin={0}
-              aria-valuemax={cards.length}
-              aria-valuenow={owned.size}
-            >
-              <div
-                className="h-full rounded-full bg-orange transition-[width] duration-700 ease-out-expo"
-                style={{ width: `${Math.round(completion * 100)}%` }}
-              />
-            </div>
-          </div>
+          <SetProgress
+            owned={owned.size}
+            total={cards.length}
+            className="relative border-t border-line pt-6 sm:mr-[20%]"
+          />
         ) : null}
       </header>
 

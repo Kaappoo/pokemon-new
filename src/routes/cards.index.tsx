@@ -14,12 +14,21 @@ import { cardSearchParams, type CardSearchParams } from '#/shared/schemas.ts'
 export const Route = createFileRoute('/cards/')({
   validateSearch: cardSearchParams,
   loaderDeps: ({ search }) => search,
-  loader: ({ context, deps }) =>
-    Promise.all([
+  loader: async ({ context, deps, cause }) => {
+    const queries = Promise.all([
       context.queryClient.ensureInfiniteQueryData(cardsQuery(deps)),
       context.queryClient.ensureQueryData(setsQuery(deps.pocket ?? false)),
       context.queryClient.ensureQueryData(typesQuery),
-    ]),
+    ])
+    // Changing a filter keeps the page on screen: the grid shows the previous
+    // results dimmed (keepPreviousData) until the new ones arrive, instead of
+    // the router swapping the whole page for its pending spinner.
+    if (cause === 'stay') {
+      void queries.catch(() => undefined)
+      return
+    }
+    await queries
+  },
   head: () => ({
     meta: seo({
       title: `Cards · ${SITE_NAME}`,
@@ -32,7 +41,7 @@ export const Route = createFileRoute('/cards/')({
 function CardsPage() {
   const search = Route.useSearch()
   const navigate = Route.useNavigate()
-  const { data: sets = [] } = useQuery(setsQuery(search.pocket ?? false))
+  const { data: sets = [] } = useQuery({ ...setsQuery(search.pocket ?? false), placeholderData: keepPreviousData })
   const { data: types = [] } = useQuery(typesQuery)
   const results = useInfiniteQuery({ ...cardsQuery(search), placeholderData: keepPreviousData })
 
@@ -40,7 +49,12 @@ function CardsPage() {
   const total = results.data?.pages[0]?.total ?? 0
 
   const update = (next: Partial<CardSearchParams>) =>
-    navigate({ search: (current) => ({ ...current, ...next }), replace: true, resetScroll: false })
+    navigate({
+      search: (current) => ({ ...current, ...next }),
+      replace: true,
+      resetScroll: false,
+      viewTransition: false,
+    })
 
   return (
     <Page>

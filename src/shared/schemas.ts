@@ -20,6 +20,12 @@ export const cardSearchParams = z.object({
 })
 export type CardSearchParams = z.infer<typeof cardSearchParams>
 
+/** /collection search params. */
+export const collectionSearchParams = z.object({
+  /** Lay the binder out set by set with empty pockets for the cards you lack. */
+  missing: z.boolean().optional().catch(undefined),
+})
+
 export const cardSearchInput = z.object({
   q: z.string().trim().max(80).optional(),
   set: z.string().trim().max(40).optional(),
