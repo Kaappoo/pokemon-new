@@ -30,6 +30,7 @@ export const buttonVariants = cva(
         xl: 'h-14 px-8 text-lg tracking-tight',
         icon: 'size-10',
         'icon-sm': 'size-8',
+        'icon-lg': 'size-12 [&_svg]:size-5',
       },
     },
     defaultVariants: { variant: 'default', size: 'default' },

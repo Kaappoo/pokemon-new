@@ -1,6 +1,9 @@
 import { cn } from '#/lib/utils.ts'
 
-/** "Your progress 12/165" with the orange fill bar. Used on set headers and binder pages. */
+/**
+ * "Your progress 12/165" with the orange fill bar. Used on set headers and binder pages.
+ * `total` is the set's printed count, so secret rares can take you past it; the bar stops at full.
+ */
 export function SetProgress({
   owned,
   total,
@@ -14,7 +17,7 @@ export function SetProgress({
   ariaLabel?: string
   className?: string
 }) {
-  const completion = total ? owned / total : 0
+  const completion = total ? Math.min(owned / total, 1) : 0
   return (
     <div className={cn('flex flex-col gap-2', className)}>
       <div className="flex items-baseline justify-between gap-4">

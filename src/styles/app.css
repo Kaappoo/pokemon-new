@@ -13,6 +13,8 @@
  */
 :root {
   color-scheme: dark;
+  /* Height of the phone bottom nav (BottomNav), without the safe-area inset. Bars pinned above it use this. */
+  --bottom-nav-height: 65px;
 
   --ink: oklch(0.145 0.004 285);
   --surface: oklch(0.185 0.005 285);

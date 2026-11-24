@@ -69,7 +69,7 @@ function SetPage() {
         {user ? (
           <SetProgress
             owned={owned.size}
-            total={cards.length}
+            total={set.official || cards.length}
             className="relative border-t border-line pt-6 sm:mr-[20%]"
           />
         ) : null}

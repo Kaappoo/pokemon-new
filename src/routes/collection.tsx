@@ -144,7 +144,7 @@ function BinderPages({ collection }: { collection: ReadonlyArray<CardSummary & {
             </div>
             <SetProgress
               owned={count}
-              total={pockets.length}
+              total={set.official || pockets.length}
               label="Collected"
               ariaLabel={`Cards collected from ${set.name}`}
               className="w-full sm:w-72"

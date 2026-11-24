@@ -42,51 +42,52 @@ function CardPage() {
         <ChevronLeft className="size-4" /> {set.name}
       </Link>
 
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,26rem)_1fr] lg:gap-16">
-        <div className="lg:sticky lg:top-24 lg:self-start">
+      {/* Phones read top-down: who the card is, a capped look at the art, then what you can do with it. */}
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,26rem)_1fr] lg:grid-rows-[auto_1fr] lg:gap-x-16 lg:gap-y-8">
+        <header className="flex min-w-0 flex-col gap-5 lg:col-start-2">
+          <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-4">
+            <div className="flex flex-col gap-3">
+              <p className="flex flex-wrap items-center gap-2 text-sm text-paper-dim">
+                {logo ? <img src={logo} alt="" className="h-6 w-auto max-w-24 object-contain" /> : null}
+                <span>
+                  {set.serieName} · {set.name}
+                </span>
+              </p>
+              <h1 className="font-display text-[clamp(2rem,8vw,3.75rem)] leading-[1.05] text-balance break-words">
+                {card.name}
+              </h1>
+            </div>
+            <CollectorNumber number={number} />
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {card.category ? <Badge variant="outline">{categoryLabel(card.category)}</Badge> : null}
+            {detail?.stage ? <Badge variant="outline">{detail.stage}</Badge> : null}
+            {card.types.map((type) => (
+              <Badge key={type} variant="outline">
+                {type}
+              </Badge>
+            ))}
+            {card.rarity ? <Badge variant="muted">{card.rarity}</Badge> : null}
+            {set.isPocket ? <Badge variant="live">TCG Pocket</Badge> : null}
+          </div>
+          {card.hp ? (
+            <p className="flex items-baseline gap-2">
+              <span className="text-sm font-semibold text-paper-dim">HP</span>
+              <span className="font-numerals text-6xl leading-none">{card.hp}</span>
+            </p>
+          ) : null}
+        </header>
+        <div className="lg:sticky lg:top-24 lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:self-start">
           <CardArt
             image={card.image}
             name={card.name}
             localId={card.localId}
             quality="high"
             priority
-            className="mx-auto w-full max-w-sm shadow-[0_30px_60px_-30px_rgb(0_0_0/0.9)] lg:max-w-none"
+            className="mx-auto w-full max-w-[min(24rem,calc(45svh*63/88))] shadow-[0_30px_60px_-30px_rgb(0_0_0/0.9)] lg:max-w-none"
           />
         </div>
-
-        <div className="flex min-w-0 flex-col gap-8">
-          <header className="flex flex-col gap-5">
-            <div className="flex items-start justify-between gap-6">
-              <div className="flex min-w-0 flex-col gap-3">
-                <p className="flex flex-wrap items-center gap-2 text-sm text-paper-dim">
-                  {logo ? <img src={logo} alt="" className="h-6 w-auto max-w-24 object-contain" /> : null}
-                  <span>
-                    {set.serieName} · {set.name}
-                  </span>
-                </p>
-                <h1 className="font-display text-4xl break-words sm:text-6xl">{card.name}</h1>
-              </div>
-              <CollectorNumber number={number} />
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              {card.category ? <Badge variant="outline">{categoryLabel(card.category)}</Badge> : null}
-              {detail?.stage ? <Badge variant="outline">{detail.stage}</Badge> : null}
-              {card.types.map((type) => (
-                <Badge key={type} variant="outline">
-                  {type}
-                </Badge>
-              ))}
-              {card.rarity ? <Badge variant="muted">{card.rarity}</Badge> : null}
-              {set.isPocket ? <Badge variant="live">TCG Pocket</Badge> : null}
-            </div>
-            {card.hp ? (
-              <p className="flex items-baseline gap-2">
-                <span className="text-sm font-semibold text-paper-dim">HP</span>
-                <span className="font-numerals text-6xl leading-none">{card.hp}</span>
-              </p>
-            ) : null}
-          </header>
-
+        <div className="flex min-w-0 flex-col gap-8 lg:col-start-2">
           <BinderActions cardId={card.id} cardName={card.name} />
 
           {detail ? (
@@ -99,6 +100,8 @@ function CardPage() {
           )}
         </div>
       </div>
+      {/* Keeps the end of the page clear of the pinned binder bar on phones. */}
+      <div aria-hidden className="h-24 lg:hidden" />
     </Page>
   )
 }
@@ -129,7 +132,9 @@ function CardDetail({ detail }: { detail: TcgdexCard }) {
             {detail.abilities?.map((ability) => (
               <div key={ability.name} className="flex flex-col gap-1.5 p-5">
                 <p className="flex flex-wrap items-baseline gap-2">
-                  <span className="text-xs font-bold tracking-wide text-orange uppercase">{ability.type ?? 'Ability'}</span>
+                  <span className="text-xs font-bold tracking-wide text-orange uppercase">
+                    {ability.type ?? 'Ability'}
+                  </span>
                   <span className="font-semibold">{ability.name}</span>
                 </p>
                 {ability.effect ? <p className="text-sm leading-relaxed text-paper-dim">{ability.effect}</p> : null}
