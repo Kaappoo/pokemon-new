@@ -4,7 +4,10 @@ import { BookOpen, Heart, Layers, Search, User } from 'lucide-react'
 const tab =
   'flex flex-1 flex-col items-center gap-1 py-2 text-[11px] font-semibold text-paper-dim transition-colors data-[status=active]:text-orange [&_svg]:size-5'
 
-/** Thumb-reach navigation for phones. The centre action is finding a card. */
+/**
+ * Thumb-reach navigation for phones. The centre action is finding a card.
+ * Its height is mirrored in `--bottom-nav-height` (app.css) for bars pinned above it.
+ */
 export function BottomNav() {
   const { user } = useRouteContext({ from: '__root__' })
 

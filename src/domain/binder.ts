@@ -59,3 +59,33 @@ export const summarizeBinder = (entries: ReadonlyArray<BinderEntry>): BinderSumm
     topSets: tallyDesc(bySet, 5),
   }
 }
+
+/** One pocket of a binder page: a card of the set and how many copies you own (0 = an empty pocket). */
+export interface Pocket<C> {
+  readonly card: C
+  readonly quantity: number
+}
+
+export interface BinderSection<S, C> {
+  readonly set: S
+  /** Every card of the set in the order it was given (printed-number order), owned or not. */
+  readonly pockets: ReadonlyArray<Pocket<C>>
+  /** Distinct cards of this set you own. */
+  readonly owned: number
+}
+
+/**
+ * Lays out the binder as real binder pages: for each set you've started, every
+ * card in printed order, with the ones you don't own left as empty pockets.
+ * Sets keep the order they're given; sets you own nothing from are dropped.
+ */
+export const fillBinder = <S, C extends { readonly id: string }>(
+  sets: ReadonlyArray<{ readonly set: S; readonly cards: ReadonlyArray<C> }>,
+  owned: ReadonlyMap<string, number>,
+): Array<BinderSection<S, C>> =>
+  sets
+    .map(({ set, cards }) => {
+      const pockets = cards.map((card) => ({ card, quantity: owned.get(card.id) ?? 0 }))
+      return { set, pockets, owned: pockets.filter((p) => p.quantity > 0).length }
+    })
+    .filter((section) => section.owned > 0)

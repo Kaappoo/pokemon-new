@@ -12,15 +12,23 @@ export function DialogContent({
   children,
   title,
   description,
+  sheet = false,
   ...props
-}: ComponentProps<typeof DialogPrimitive.Popup> & { title: ReactNode; description?: ReactNode }) {
+}: ComponentProps<typeof DialogPrimitive.Popup> & {
+  title: ReactNode
+  description?: ReactNode
+  /** Rise from the bottom edge (phone controls) instead of centring. */
+  sheet?: boolean
+}) {
   return (
     <DialogPrimitive.Portal>
       <DialogPrimitive.Backdrop className="fixed inset-0 z-50 bg-black/70 backdrop-blur-[2px] transition-opacity duration-200 data-starting-style:opacity-0 data-ending-style:opacity-0" />
       <DialogPrimitive.Popup
         className={cn(
-          'fixed top-1/2 left-1/2 z-50 w-[min(32rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-xl border border-line bg-surface p-6 shadow-[0_40px_80px_-24px_rgb(0_0_0/0.8)]',
-          'transition-[opacity,scale,translate] duration-250 ease-out-expo data-starting-style:scale-95 data-starting-style:opacity-0 data-ending-style:scale-95 data-ending-style:opacity-0',
+          'fixed z-50 border border-line bg-surface p-6 shadow-[0_40px_80px_-24px_rgb(0_0_0/0.8)]',
+          sheet
+            ? 'inset-x-0 bottom-0 max-h-[85svh] overflow-y-auto rounded-t-2xl border-b-0 pb-[calc(1.5rem+env(safe-area-inset-bottom))] transition-[translate] duration-300 ease-out-expo data-starting-style:translate-y-full data-ending-style:translate-y-full'
+            : 'top-1/2 left-1/2 w-[min(32rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-xl transition-[opacity,scale,translate] duration-250 ease-out-expo data-starting-style:scale-95 data-starting-style:opacity-0 data-ending-style:scale-95 data-ending-style:opacity-0',
           className,
         )}
         {...props}

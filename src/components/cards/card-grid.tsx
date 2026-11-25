@@ -10,7 +10,8 @@ const rowHeight = (tileWidth: number) => Math.round((tileWidth * 88) / 63 + 52 +
 /** Server-rendered (and first hydrated) tiles before the virtual grid takes over. */
 const STATIC_COUNT = 24
 
-const gridClass = 'grid gap-4 grid-cols-[repeat(auto-fill,minmax(148px,1fr))]'
+/** The plain CSS grid every card list uses, for grids too short to need virtualizing. */
+export const cardGridClass = 'grid gap-4 grid-cols-[repeat(auto-fill,minmax(148px,1fr))]'
 
 /**
  * A responsive, window-virtualized card grid. Big sets and search results
@@ -34,7 +35,7 @@ export function CardGrid<C extends CardSummary>({
 
   // Server render and hydration: a plain CSS grid with the same column maths, so nothing jumps.
   if (!hydrated) {
-    return <div className={gridClass}>{cards.slice(0, STATIC_COUNT).map(renderTile)}</div>
+    return <div className={cardGridClass}>{cards.slice(0, STATIC_COUNT).map(renderTile)}</div>
   }
   return (
     <VirtualGrid
